@@ -14,6 +14,8 @@ public class Jagger implements JaggerConstants {
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case NUMBER:
+      case PLUS:
+      case MINUS:
       case 11:{
         ;
         break;
@@ -39,17 +41,17 @@ VisitorPrettyPrint v=new VisitorPrettyPrint();
   static final public Expression expression() throws ParseException {Expression a,b;
     a = term();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case 7:
-    case 8:{
+    case PLUS:
+    case MINUS:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 7:{
-        jj_consume_token(7);
+      case PLUS:{
+        jj_consume_token(PLUS);
         b = expression();
 a = new Binop(a,b,Bop.PLUS);
         break;
         }
-      case 8:{
-        jj_consume_token(8);
+      case MINUS:{
+        jj_consume_token(MINUS);
         b = expression();
 a = new Binop(a,b,Bop.MINUS);
         break;
@@ -109,7 +111,7 @@ a = new Binop(a,b,Bop.DIV);
 }
 
 // Factor of an expression.
-// F -> <NUMBER> | "(" E ")"
+// F -> <NUMBER> | "(" +E ")" | "(" -E ")"
   static final public Expression factor() throws ParseException {Token t; Expression e;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case NUMBER:{
@@ -122,6 +124,18 @@ a = new Binop(a,b,Bop.DIV);
       e = expression();
       jj_consume_token(12);
 {if ("" != null) return e;}
+      break;
+      }
+    case MINUS:{
+      jj_consume_token(MINUS);
+      e = factor();
+{if ("" != null) return new Binop(new Num(0.0), e, Bop.MINUS);}
+      break;
+      }
+    case PLUS:{
+      jj_consume_token(PLUS);
+      e = factor();
+{if ("" != null) return new Binop(new Num(0.0), e, Bop.PLUS);}
       break;
       }
     default:
@@ -148,7 +162,7 @@ a = new Binop(a,b,Bop.DIV);
 	   jj_la1_init_0();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x810,0x180,0x180,0x600,0x600,0x810,};
+	   jj_la1_0 = new int[] {0x8d0,0xc0,0xc0,0x600,0x600,0x8d0,};
 	}
 
   /** Constructor with InputStream. */

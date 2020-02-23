@@ -25,9 +25,5 @@ public class VisitorEvaluation implements Visitor<Double>{
             return d1 / d2;
         }
         return -1.0;
-    }
-
-    public Double visit(Unop u){
-        return 0.0;
-    }  
+    } 
 }

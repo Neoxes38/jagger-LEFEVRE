@@ -23,10 +23,4 @@ public class VisitorPrettyPrint implements Visitor<String>
         return "(" + s1 + b.op + s2 + ")";
     }
 
-    @Override
-    public String visit(Unop u){
-        String res = "(" + u.op + u.ex.accept(this) + ")";
-        System.out.println(res);
-        return res;
-    }
 } // VisiteurPrettyPrint
