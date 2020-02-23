@@ -4,13 +4,13 @@
  * @author (your name)
  * @version (a version number or a date)
  */
-public class Binop extends Expression
+public class BinOp implements Expression
 {
     public Expression lex;
     public Expression rex;
-    public Bop op;   
+    public BinarOperator op;   
 
-    public Binop(Expression lex, Expression rex, Bop op){
+    public BinOp(Expression lex, Expression rex, BinarOperator op){
         this.lex = lex;
         this.rex = rex;
         this.op = op;

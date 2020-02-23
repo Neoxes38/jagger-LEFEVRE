@@ -4,7 +4,7 @@
  * @author (your name)
  * @version (a version number or a date)
  */
-public abstract class Expression
+public interface  Expression
 {
-    public abstract <T> T accept(Visitor<T> v);
+    public <T> T accept(Visitor<T> v);
 } // Expression

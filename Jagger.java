@@ -14,9 +14,10 @@ public class Jagger implements JaggerConstants {
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case NUMBER:
-      case 7:
+      case BOOLEAN:
       case 8:
-      case 11:{
+      case 9:
+      case 12:{
         ;
         break;
         }
@@ -41,19 +42,19 @@ VisitorPrettyPrint v=new VisitorPrettyPrint();
   static final public Expression expression() throws ParseException {Expression a,b;
     a = term();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case 7:
-    case 8:{
+    case 8:
+    case 9:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 7:{
-        jj_consume_token(7);
-        b = expression();
-a = new Binop(a,b,Bop.PLUS);
-        break;
-        }
       case 8:{
         jj_consume_token(8);
         b = expression();
-a = new Binop(a,b,Bop.MINUS);
+a = new BinOp(a,b,BinarOperator.PLUS);
+        break;
+        }
+      case 9:{
+        jj_consume_token(9);
+        b = expression();
+a = new BinOp(a,b,BinarOperator.MINUS);
         break;
         }
       default:
@@ -78,8 +79,8 @@ a = new Binop(a,b,Bop.MINUS);
     label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 9:
-      case 10:{
+      case 10:
+      case 11:{
         ;
         break;
         }
@@ -88,16 +89,16 @@ a = new Binop(a,b,Bop.MINUS);
         break label_2;
       }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 9:{
-        jj_consume_token(9);
-        b = factor();
-a = new Binop(a,b,Bop.MULT);
-        break;
-        }
       case 10:{
         jj_consume_token(10);
         b = factor();
-a = new Binop(a,b,Bop.DIV);
+a = new BinOp(a,b,BinarOperator.MULT);
+        break;
+        }
+      case 11:{
+        jj_consume_token(11);
+        b = factor();
+a = new BinOp(a,b,BinarOperator.DIV);
         break;
         }
       default:
@@ -119,19 +120,19 @@ a = new Binop(a,b,Bop.DIV);
 {if ("" != null) return new Num(Double.parseDouble(t.toString()));}
       break;
       }
-    case 11:{
-      jj_consume_token(11);
-      e = expression();
+    case 12:{
       jj_consume_token(12);
+      e = expression();
+      jj_consume_token(13);
 {if ("" != null) return e;}
       break;
       }
-    case 8:{
+    case 9:{
       label_3:
       while (true) {
-        jj_consume_token(8);
+        jj_consume_token(9);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case 8:{
+        case 9:{
           ;
           break;
           }
@@ -141,15 +142,15 @@ a = new Binop(a,b,Bop.DIV);
         }
       }
       e = factor();
-{if ("" != null) return new Binop(new Num(0.0), e, Bop.MINUS);}
+{if ("" != null) return new BinOp(new Num(0.0), e, BinarOperator.MINUS);}
       break;
       }
-    case 7:{
+    case 8:{
       label_4:
       while (true) {
-        jj_consume_token(7);
+        jj_consume_token(8);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case 7:{
+        case 8:{
           ;
           break;
           }
@@ -159,7 +160,12 @@ a = new Binop(a,b,Bop.DIV);
         }
       }
       e = factor();
-{if ("" != null) return new Binop(new Num(0.0), e, Bop.PLUS);}
+{if ("" != null) return new BinOp(new Num(0.0), e, BinarOperator.PLUS);}
+      break;
+      }
+    case BOOLEAN:{
+      t = jj_consume_token(BOOLEAN);
+{if ("" != null) return new Bool(Boolean.parseBoolean(t.toString()));}
       break;
       }
     default:
@@ -186,7 +192,7 @@ a = new Binop(a,b,Bop.DIV);
 	   jj_la1_init_0();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x990,0x180,0x180,0x600,0x600,0x100,0x80,0x990,};
+	   jj_la1_0 = new int[] {0x1350,0x300,0x300,0xc00,0xc00,0x200,0x100,0x1350,};
 	}
 
   /** Constructor with InputStream. */
@@ -332,7 +338,7 @@ a = new Binop(a,b,Bop.DIV);
   /** Generate ParseException. */
   static public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[13];
+	 boolean[] la1tokens = new boolean[14];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -346,7 +352,7 @@ a = new Binop(a,b,Bop.DIV);
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 13; i++) {
+	 for (int i = 0; i < 14; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;

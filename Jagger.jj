@@ -21,6 +21,7 @@ TOKEN:
 {
     < NUMBER: (<DIGIT>)+ ("." (<DIGIT>)*)? >  // A decimal number.
 |   < DIGIT: ["0"-"9"] >                      // A decimal digit.
+|	< BOOLEAN: "true" | "false" >			  // A boolean.
 |   < EOL: "\n" >                             // End of line.
 }
 
@@ -48,8 +49,8 @@ Expression expression():
 {
     a=term()
     (
-      "+" b=expression() { a = new Binop(a,b,Bop.PLUS); }
-    | "-" b=expression() { a = new Binop(a,b,Bop.MINUS); }
+      "+" b=expression() { a = new BinOp(a,b,BinarOperator.PLUS); }
+    | "-" b=expression() { a = new BinOp(a,b,BinarOperator.MINUS); }
     )? { return a; }
 }
 
@@ -60,19 +61,20 @@ Expression term():
 {
     a=factor()
     (
-      "*" b=factor() { a = new Binop(a,b,Bop.MULT); }
-    | "/" b=factor() { a = new Binop(a,b,Bop.DIV); }
+      "*" b=factor() { a = new BinOp(a,b,BinarOperator.MULT); }
+    | "/" b=factor() { a = new BinOp(a,b,BinarOperator.DIV); }
     )* { return a; }
 }
 
 
 // Factor of an expression.
-// F -> <NUMBER> | "(" +E ")" | "(" -E ")" | +F | -F
+// F -> <NUMBER> | <BOOLEAN> | "(" +E ")" | "(" -E ")" | +F | -F
 Expression factor():
 { Token t; Expression e;}
 {
       t=<NUMBER> { return new Num(Double.parseDouble(t.toString())); }
 	| "(" e=expression() ")" { return e; }
-	| ("-")+  e=factor() {return new Binop(new Num(0.0), e, Bop.MINUS);}
-	| ("+")+  e=factor() {return new Binop(new Num(0.0), e, Bop.PLUS);}
+	| ("-")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.MINUS);}
+	| ("+")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.PLUS);}
+	| t=<BOOLEAN> { return new Bool(Boolean.parseBoolean(t.toString()));}
 }

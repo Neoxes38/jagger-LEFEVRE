@@ -4,7 +4,7 @@
  * @author (your name)
  * @version (a version number or a date)
  */
-public class Num extends Expression
+public class Num implements Expression
 {
     private Double value;
 

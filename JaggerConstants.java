@@ -13,7 +13,9 @@ public interface JaggerConstants {
   /** RegularExpression Id. */
   int DIGIT = 5;
   /** RegularExpression Id. */
-  int EOL = 6;
+  int BOOLEAN = 6;
+  /** RegularExpression Id. */
+  int EOL = 7;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -26,6 +28,7 @@ public interface JaggerConstants {
     "\"\\t\"",
     "<NUMBER>",
     "<DIGIT>",
+    "<BOOLEAN>",
     "\"\\n\"",
     "\"+\"",
     "\"-\"",
