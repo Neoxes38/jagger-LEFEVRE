@@ -29,21 +29,48 @@ static private int jjMoveStringLiteralDfa0_0(){
    {
       case 10:
          return jjStopAtPos(0, 7);
+      case 33:
+         return jjStopAtPos(0, 16);
+      case 38:
+         return jjMoveStringLiteralDfa1_0(0x2000L);
       case 40:
-         return jjStopAtPos(0, 12);
+         return jjStopAtPos(0, 14);
       case 41:
-         return jjStopAtPos(0, 13);
+         return jjStopAtPos(0, 15);
       case 42:
-         return jjStopAtPos(0, 10);
+         return jjStopAtPos(0, 11);
       case 43:
          return jjStopAtPos(0, 8);
       case 45:
          return jjStopAtPos(0, 9);
       case 47:
-         return jjStopAtPos(0, 11);
+         return jjStopAtPos(0, 12);
+      case 124:
+         return jjMoveStringLiteralDfa1_0(0x400L);
       default :
          return jjMoveNfa_0(3, 0);
    }
+}
+static private int jjMoveStringLiteralDfa1_0(long active0){
+   try { curChar = input_stream.readChar(); }
+   catch(java.io.IOException e) {
+      jjStopStringLiteralDfa_0(0, active0);
+      return 1;
+   }
+   switch(curChar)
+   {
+      case 38:
+         if ((active0 & 0x2000L) != 0L)
+            return jjStopAtPos(1, 13);
+         break;
+      case 124:
+         if ((active0 & 0x400L) != 0L)
+            return jjStopAtPos(1, 10);
+         break;
+      default :
+         break;
+   }
+   return jjStartNfa_0(0, active0);
 }
 static private int jjMoveNfa_0(int startState, int curPos)
 {
@@ -161,8 +188,8 @@ static private int jjMoveNfa_0(int startState, int curPos)
 
 /** Token literal values. */
 public static final String[] jjstrLiteralImages = {
-"", null, null, null, null, null, null, "\12", "\53", "\55", "\52", "\57", 
-"\50", "\51", };
+"", null, null, null, null, null, null, "\12", "\53", "\55", "\174\174", 
+"\52", "\57", "\46\46", "\50", "\51", "\41", };
 static protected Token jjFillToken()
 {
    final Token t;
@@ -369,10 +396,10 @@ public static final String[] lexStateNames = {
 
 /** Lex State array. */
 public static final int[] jjnewLexState = {
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
 };
 static final long[] jjtoToken = {
-   0x3ff1L, 
+   0x1fff1L, 
 };
 static final long[] jjtoSkip = {
    0xeL, 

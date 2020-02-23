@@ -17,7 +17,8 @@ public class Jagger implements JaggerConstants {
       case BOOLEAN:
       case 8:
       case 9:
-      case 12:{
+      case 14:
+      case 16:{
         ;
         break;
         }
@@ -43,7 +44,8 @@ VisitorPrettyPrint v=new VisitorPrettyPrint();
     a = term();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case 8:
-    case 9:{
+    case 9:
+    case 10:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case 8:{
         jj_consume_token(8);
@@ -55,6 +57,12 @@ a = new BinOp(a,b,BinarOperator.PLUS);
         jj_consume_token(9);
         b = expression();
 a = new BinOp(a,b,BinarOperator.MINUS);
+        break;
+        }
+      case 10:{
+        jj_consume_token(10);
+        b = expression();
+a = new BinOp(a,b,BinarOperator.OR);
         break;
         }
       default:
@@ -79,8 +87,9 @@ a = new BinOp(a,b,BinarOperator.MINUS);
     label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 10:
-      case 11:{
+      case 11:
+      case 12:
+      case 13:{
         ;
         break;
         }
@@ -89,16 +98,22 @@ a = new BinOp(a,b,BinarOperator.MINUS);
         break label_2;
       }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 10:{
-        jj_consume_token(10);
+      case 11:{
+        jj_consume_token(11);
         b = factor();
 a = new BinOp(a,b,BinarOperator.MULT);
         break;
         }
-      case 11:{
-        jj_consume_token(11);
+      case 12:{
+        jj_consume_token(12);
         b = factor();
 a = new BinOp(a,b,BinarOperator.DIV);
+        break;
+        }
+      case 13:{
+        jj_consume_token(13);
+        b = expression();
+a = new BinOp(a,b,BinarOperator.AND);
         break;
         }
       default:
@@ -112,7 +127,7 @@ a = new BinOp(a,b,BinarOperator.DIV);
 }
 
 // Factor of an expression.
-// F -> <NUMBER> | "(" +E ")" | "(" -E ")" | +F | -F
+// F -> <NUMBER> | <BOOLEAN> | "(" +E ")" | "(" -E ")" | +F | -F
   static final public Expression factor() throws ParseException {Token t; Expression e;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case NUMBER:{
@@ -120,10 +135,10 @@ a = new BinOp(a,b,BinarOperator.DIV);
 {if ("" != null) return new Num(Double.parseDouble(t.toString()));}
       break;
       }
-    case 12:{
-      jj_consume_token(12);
+    case 14:{
+      jj_consume_token(14);
       e = expression();
-      jj_consume_token(13);
+      jj_consume_token(15);
 {if ("" != null) return e;}
       break;
       }
@@ -163,6 +178,12 @@ a = new BinOp(a,b,BinarOperator.DIV);
 {if ("" != null) return new BinOp(new Num(0.0), e, BinarOperator.PLUS);}
       break;
       }
+    case 16:{
+      jj_consume_token(16);
+      e = factor();
+{if ("" != null) return new Not(e);}
+      break;
+      }
     case BOOLEAN:{
       t = jj_consume_token(BOOLEAN);
 {if ("" != null) return new Bool(Boolean.parseBoolean(t.toString()));}
@@ -192,7 +213,7 @@ a = new BinOp(a,b,BinarOperator.DIV);
 	   jj_la1_init_0();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x1350,0x300,0x300,0xc00,0xc00,0x200,0x100,0x1350,};
+	   jj_la1_0 = new int[] {0x14350,0x700,0x700,0x3800,0x3800,0x200,0x100,0x14350,};
 	}
 
   /** Constructor with InputStream. */
@@ -338,7 +359,7 @@ a = new BinOp(a,b,BinarOperator.DIV);
   /** Generate ParseException. */
   static public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[14];
+	 boolean[] la1tokens = new boolean[17];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -352,7 +373,7 @@ a = new BinOp(a,b,BinarOperator.DIV);
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 14; i++) {
+	 for (int i = 0; i < 17; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;

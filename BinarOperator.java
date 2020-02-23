@@ -6,4 +6,4 @@
  * @version (version number or date here)
  */
 
-public enum BinarOperator{PLUS, MINUS, MULT, DIV;}
+public enum BinarOperator{PLUS, MINUS, MULT, DIV, AND, OR;}

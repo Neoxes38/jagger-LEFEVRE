@@ -10,7 +10,6 @@ public interface Visitor<T>
     public T visit(BinOp b);
     
     public T visit(Relation r);
-    public T visit(BoolOp o);
-    public T visit(No n);
+    public T visit(Not n);
     public T visit(Bool b);
 } // Visitor

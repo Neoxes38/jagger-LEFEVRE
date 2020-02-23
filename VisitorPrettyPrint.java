@@ -33,23 +33,13 @@ public class VisitorPrettyPrint implements Visitor<String>
         return "(" + s1 + r.op + s2 + ")";
     }
     @Override
-    public String visit(BoolOp o){
-        String s1, s2;
-        System.out.print("(");
-        s1 = o.lex.accept(this);
-        System.out.print(" " + o.op + " ");
-        s2 = o.rex.accept(this);
-        System.out.print(")");
-        return "(" + s1 + o.op + s2 + ")";
-    }
-    @Override
-    public String visit(No n){
+    public String visit(Not n){
         String s;
         System.out.print("(");
-        System.out.print(" NO ");
+        System.out.print(" NOT ");
         s = n.ex.accept(this);
         System.out.print(")");
-        return "( NO " + s + ")";
+        return "( NOT " + s + ")";
     }
     @Override
     public String visit(Bool b){

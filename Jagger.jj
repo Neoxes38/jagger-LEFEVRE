@@ -50,7 +50,8 @@ Expression expression():
     a=term()
     (
       "+" b=expression() { a = new BinOp(a,b,BinarOperator.PLUS); }
-    | "-" b=expression() { a = new BinOp(a,b,BinarOperator.MINUS); }
+    | "-" b=expression() { a = new BinOp(a,b,BinarOperator.MINUS);}
+	| "||" b=expression() { a = new BinOp(a,b,BinarOperator.OR);}
     )? { return a; }
 }
 
@@ -63,6 +64,7 @@ Expression term():
     (
       "*" b=factor() { a = new BinOp(a,b,BinarOperator.MULT); }
     | "/" b=factor() { a = new BinOp(a,b,BinarOperator.DIV); }
+	| "&&" b=expression() { a = new BinOp(a,b,BinarOperator.AND);}
     )* { return a; }
 }
 
@@ -76,5 +78,6 @@ Expression factor():
 	| "(" e=expression() ")" { return e; }
 	| ("-")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.MINUS);}
 	| ("+")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.PLUS);}
+	| ("!")   e=factor() {return new Not(e);}
 	| t=<BOOLEAN> { return new Bool(Boolean.parseBoolean(t.toString()));}
 }

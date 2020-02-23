@@ -24,6 +24,10 @@ public class VisitorEvaluation implements Visitor<Double>{
             return d1 * d2;
             case DIV:
             return d1 / d2;
+            case AND:
+            return d1==d2 && d1==1.0 ? 1.0 : 0.0;
+            case OR:
+            return d1==1.0 || d2==1.0 ? 1.0 : 0.0;
         }
         return -1.0;
     } 
@@ -49,21 +53,7 @@ public class VisitorEvaluation implements Visitor<Double>{
         return -1.0;
     }
     @Override
-    public Double visit(BoolOp o){
-        double d1, d2;
-        d1 = o.lex.accept(this);
-        d2 = o.rex.accept(this);
-        
-        switch(o.op){
-            case AND:
-            return d1==d2 && d1==1.0 ? 1.0 : 0.0;
-            case OR:
-            return d1==1.0 || d2==1.0 ? 1.0 : 0.0;
-        }
-        return -1.0;
-    }
-    @Override
-    public Double visit(No n){
+    public Double visit(Not n){
         return n.ex.accept(this)==1.0 ? 0.0 : 1.0;
     }
     @Override
