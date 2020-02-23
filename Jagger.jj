@@ -75,6 +75,6 @@ Expression factor():
 {
       t=<NUMBER> { return new Num(Double.parseDouble(t.toString())); }
 	| "(" e=expression() ")" { return e; }
-	| <MINUS>  e=factor() {return new Binop(new Num(0.0), e, Bop.MINUS);}
+	| (<MINUS>)+  e=factor() {return new Binop(new Num(0.0), e, Bop.MINUS);}
 	| (<PLUS>)+  e=factor() {return new Binop(new Num(0.0), e, Bop.PLUS);}
 }
