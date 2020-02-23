@@ -21,8 +21,6 @@ TOKEN:
 {
     < NUMBER: (<DIGIT>)+ ("." (<DIGIT>)*)? >  // A decimal number.
 |   < DIGIT: ["0"-"9"] >                      // A decimal digit.
-|	< PLUS: "+" >							  // Plus operator.
-|	< MINUS: "-">							  // Minus operator.
 |   < EOL: "\n" >                             // End of line.
 }
 
@@ -50,8 +48,8 @@ Expression expression():
 {
     a=term()
     (
-      <PLUS> b=expression() { a = new Binop(a,b,Bop.PLUS); }
-    | <MINUS> b=expression() { a = new Binop(a,b,Bop.MINUS); }
+      "+" b=expression() { a = new Binop(a,b,Bop.PLUS); }
+    | "-" b=expression() { a = new Binop(a,b,Bop.MINUS); }
     )? { return a; }
 }
 
@@ -69,12 +67,12 @@ Expression term():
 
 
 // Factor of an expression.
-// F -> <NUMBER> | "(" +E ")" | "(" -E ")"
+// F -> <NUMBER> | "(" +E ")" | "(" -E ")" | +F | -F
 Expression factor():
 { Token t; Expression e;}
 {
       t=<NUMBER> { return new Num(Double.parseDouble(t.toString())); }
 	| "(" e=expression() ")" { return e; }
-	| (<MINUS>)+  e=factor() {return new Binop(new Num(0.0), e, Bop.MINUS);}
-	| (<PLUS>)+  e=factor() {return new Binop(new Num(0.0), e, Bop.PLUS);}
+	| ("-")+  e=factor() {return new Binop(new Num(0.0), e, Bop.MINUS);}
+	| ("+")+  e=factor() {return new Binop(new Num(0.0), e, Bop.PLUS);}
 }

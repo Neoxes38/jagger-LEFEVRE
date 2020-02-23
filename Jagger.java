@@ -14,8 +14,8 @@ public class Jagger implements JaggerConstants {
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case NUMBER:
-      case PLUS:
-      case MINUS:
+      case 7:
+      case 8:
       case 11:{
         ;
         break;
@@ -41,17 +41,17 @@ VisitorPrettyPrint v=new VisitorPrettyPrint();
   static final public Expression expression() throws ParseException {Expression a,b;
     a = term();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case PLUS:
-    case MINUS:{
+    case 7:
+    case 8:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case PLUS:{
-        jj_consume_token(PLUS);
+      case 7:{
+        jj_consume_token(7);
         b = expression();
 a = new Binop(a,b,Bop.PLUS);
         break;
         }
-      case MINUS:{
-        jj_consume_token(MINUS);
+      case 8:{
+        jj_consume_token(8);
         b = expression();
 a = new Binop(a,b,Bop.MINUS);
         break;
@@ -111,7 +111,7 @@ a = new Binop(a,b,Bop.DIV);
 }
 
 // Factor of an expression.
-// F -> <NUMBER> | "(" +E ")" | "(" -E ")"
+// F -> <NUMBER> | "(" +E ")" | "(" -E ")" | +F | -F
   static final public Expression factor() throws ParseException {Token t; Expression e;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case NUMBER:{
@@ -126,18 +126,12 @@ a = new Binop(a,b,Bop.DIV);
 {if ("" != null) return e;}
       break;
       }
-    case MINUS:{
-      jj_consume_token(MINUS);
-      e = factor();
-{if ("" != null) return new Binop(new Num(0.0), e, Bop.MINUS);}
-      break;
-      }
-    case PLUS:{
+    case 8:{
       label_3:
       while (true) {
-        jj_consume_token(PLUS);
+        jj_consume_token(8);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case PLUS:{
+        case 8:{
           ;
           break;
           }
@@ -147,11 +141,29 @@ a = new Binop(a,b,Bop.DIV);
         }
       }
       e = factor();
+{if ("" != null) return new Binop(new Num(0.0), e, Bop.MINUS);}
+      break;
+      }
+    case 7:{
+      label_4:
+      while (true) {
+        jj_consume_token(7);
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case 7:{
+          ;
+          break;
+          }
+        default:
+          jj_la1[6] = jj_gen;
+          break label_4;
+        }
+      }
+      e = factor();
 {if ("" != null) return new Binop(new Num(0.0), e, Bop.PLUS);}
       break;
       }
     default:
-      jj_la1[6] = jj_gen;
+      jj_la1[7] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -168,13 +180,13 @@ a = new Binop(a,b,Bop.DIV);
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[7];
+  static final private int[] jj_la1 = new int[8];
   static private int[] jj_la1_0;
   static {
 	   jj_la1_init_0();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x8d0,0xc0,0xc0,0x600,0x600,0x40,0x8d0,};
+	   jj_la1_0 = new int[] {0x990,0x180,0x180,0x600,0x600,0x100,0x80,0x990,};
 	}
 
   /** Constructor with InputStream. */
@@ -195,7 +207,7 @@ a = new Binop(a,b,Bop.DIV);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 7; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -209,7 +221,7 @@ a = new Binop(a,b,Bop.DIV);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 7; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -226,7 +238,7 @@ a = new Binop(a,b,Bop.DIV);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 7; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -244,7 +256,7 @@ a = new Binop(a,b,Bop.DIV);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 7; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -260,7 +272,7 @@ a = new Binop(a,b,Bop.DIV);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 7; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -269,7 +281,7 @@ a = new Binop(a,b,Bop.DIV);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 7; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -325,7 +337,7 @@ a = new Binop(a,b,Bop.DIV);
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
 	 }
-	 for (int i = 0; i < 7; i++) {
+	 for (int i = 0; i < 8; i++) {
 	   if (jj_la1[i] == jj_gen) {
 		 for (int j = 0; j < 32; j++) {
 		   if ((jj_la1_0[i] & (1<<j)) != 0) {
