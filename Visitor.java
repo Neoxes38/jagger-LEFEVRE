@@ -6,10 +6,10 @@
  */
 public interface Visitor<T>
 {
-    public T visit(Num n);
-    public T visit(BinOp b);
+    T visit(Num n);
+    T visit(BinOp b);
     
-    public T visit(Relation r);
-    public T visit(Not n);
-    public T visit(Bool b);
+    T visit(Relation r);
+    T visit(Not n);
+    T visit(Bool b);
 } // Visitor

@@ -3,3 +3,5 @@
 *.bluej
 *.swp
 *.swo
+compiler_project.*
+out/

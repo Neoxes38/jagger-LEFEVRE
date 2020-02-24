@@ -31,7 +31,7 @@ void mainloop():
 { Expression a; }
 {
     (
-      a=expression() <EOL> {VisitorPrettyPrint v=new VisitorPrettyPrint();
+      a=relation() <EOL> {VisitorPrettyPrint v=new VisitorPrettyPrint();
 	  						a.accept(v);
 							System.out.println();
 							VisitorEvaluation vv = new VisitorEvaluation();
@@ -43,7 +43,23 @@ void mainloop():
 }
 
 // Expression (the axiom).
-// E -> T ('+'T | '-'T)*
+// R -> E ('<'E | '>'E | '<='E | '>='E | '=='E | '<>'E)
+Expression relation():
+{ Expression a, b; }
+{
+	a=expression()
+	(
+	  "<" b=expression() { a = new Relation(a,b,RelationOperator.INF); } 
+	| ">" b=expression() { a = new Relation(a,b,RelationOperator.SUP); }
+	| "<=" b=expression() { a = new Relation(a,b,RelationOperator.INF_EQ); }
+	| ">=" b=expression() { a = new Relation(a,b,RelationOperator.SUP_EQ); }
+	| "==" b=expression() { a = new Relation(a,b,RelationOperator.EQ); }
+	| "<>" b=expression() { a = new Not(new Relation(a,b,RelationOperator.EQ)); }
+	) { return a; } 
+}
+
+// Expression (the axiom).
+// E -> T ('+'T | '-'T | '||'T)*
 Expression expression():
 { Expression a,b; }
 {
@@ -56,7 +72,7 @@ Expression expression():
 }
 
 // Term.
-// T -> F ('*'F | '/'F)*
+// T -> F ('*'F | '/'F | '&&'F)*
 Expression term():
 { Expression a,b; }
 {
@@ -70,7 +86,7 @@ Expression term():
 
 
 // Factor of an expression.
-// F -> <NUMBER> | <BOOLEAN> | "(" +E ")" | "(" -E ")" | +F | -F
+// F -> <NUMBER> | <BOOLEAN> | "(" +E ")" | "(" -E ")" | '+'F | '-'F | '!'F
 Expression factor():
 { Token t; Expression e;}
 {
@@ -78,6 +94,6 @@ Expression factor():
 	| "(" e=expression() ")" { return e; }
 	| ("-")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.MINUS);}
 	| ("+")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.PLUS);}
-	| ("!")   e=factor() {return new Not(e);}
+	| "!"   e=factor() {return new Not(e);}
 	| t=<BOOLEAN> { return new Bool(Boolean.parseBoolean(t.toString()));}
 }

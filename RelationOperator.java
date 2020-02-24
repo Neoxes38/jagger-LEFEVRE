@@ -7,5 +7,5 @@
  */
 public enum RelationOperator
 {
-    EQUAL, INF, SUP, INF_EQ, SUP_EQ; 
+    EQ, INF, SUP, INF_EQ, SUP_EQ
 }

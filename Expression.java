@@ -6,5 +6,5 @@
  */
 public interface  Expression
 {
-    public <T> T accept(Visitor<T> v);
+    <T> T accept(Visitor<T> v);
 } // Expression

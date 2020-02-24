@@ -39,7 +39,7 @@ public class VisitorEvaluation implements Visitor<Double>{
         d2 = r.rex.accept(this);
         
         switch(r.op){
-            case EQUAL:
+            case EQ:
             return d1 == d2 ? 1.0 : 0.0;
             case INF:
             return d1 < d2 ? 1.0 : 0.0;

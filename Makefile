@@ -6,3 +6,5 @@ all:
 clear_dir:
 	rm *.class
 	rm *.ctxt
+	rm *.swo
+	rm *.swp
