@@ -1,13 +1,20 @@
 // Options for JavaCC.
 options { LOOKAHEAD=1; FORCE_LA_CHECK=true; }
-
 // Fonction principale
 PARSER_BEGIN(Jagger)
+
+import java.io.*;
 public class Jagger
 {
-    public static void main(String args[]) throws ParseException
+    public static void main(String args[]) throws ParseException, FileNotFoundException
     {
-        Jagger parser = new Jagger(System.in);
+		Jagger parser;
+		if(args.length!=0){
+			File inputFile = new File(args[0]);
+			InputStream input = new FileInputStream(inputFile);
+        	parser = new Jagger(input);
+		}else
+			parser = new Jagger(System.in);
         parser.mainloop();
     }
 }
