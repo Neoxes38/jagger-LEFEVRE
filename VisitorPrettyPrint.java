@@ -35,8 +35,7 @@ public class VisitorPrettyPrint implements Visitor<String>
     @Override
     public String visit(Not n){
         String s;
-        System.out.print("(");
-        System.out.print(" NOT ");
+        System.out.print("( NOT ");
         s = n.ex.accept(this);
         System.out.print(")");
         return "( NOT " + s + ")";
@@ -45,5 +44,13 @@ public class VisitorPrettyPrint implements Visitor<String>
     public String visit(Bool b){
         System.out.print(b.getValue().toString());
         return b.getValue().toString();
+    }
+
+    @Override
+    public String visit(Print p) {
+        System.out.print("print(");
+        String s = p.ex.accept(this) ;
+        System.out.print(")");
+        return "print("+s+")";
     }
 } // VisitorPrettyPrint

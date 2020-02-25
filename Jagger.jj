@@ -30,27 +30,37 @@ TOKEN:
 |   < DIGIT: ["0"-"9"] >                      // A decimal digit.
 |	< BOOLEAN: "true" | "false" >			  // A boolean.
 |   < EOL: "\n" >                             // End of line.
+|   < PRINT: "print" >                         // Print function.
 }
 
 // Main lopp: read expressions on a line until end of file.
-//     mainloop → (expression <EOL>)* <EOF>
+//     mainloop → ((P | E) <EOL>)* <EOF>
 void mainloop():
 { Expression a; }
 {
     (
-      a=relation() <EOL> {VisitorPrettyPrint v=new VisitorPrettyPrint();
+      (a=print() | a=relation())
+      <EOL> {VisitorPrettyPrint v=new VisitorPrettyPrint();
 	  						a.accept(v);
 							System.out.println();
 							VisitorEvaluation vv = new VisitorEvaluation();
 							double d = a.accept(vv);
 							System.out.println(d);
-							}
+	        }
     )*
     <EOF>
 }
 
 // Expression (the axiom).
-// R -> E ('<'E | '>'E | '<='E | '>='E | '=='E | '<>'E)
+// P -> "print(" R ")"
+Expression print():
+{Expression e;}
+{
+    <PRINT> "(" e=relation()  ")" { return new Print(e); }
+}
+
+// Expression (the axiom).
+// R -> E ('<'R | '>'R | '<='R | '>='R | '=='R | '<>'R)
 Expression relation():
 { Expression a, b; }
 {
@@ -87,20 +97,20 @@ Expression term():
     (
       "*" b=factor() { a = new BinOp(a,b,BinarOperator.MULT); }
     | "/" b=factor() { a = new BinOp(a,b,BinarOperator.DIV); }
-	| "&&" b=expression() { a = new BinOp(a,b,BinarOperator.AND);}
+	| "&&" b=factor() { a = new BinOp(a,b,BinarOperator.AND);}
     )* { return a; }
 }
 
 
 // Factor of an expression.
-// F -> <NUMBER> | <BOOLEAN> | "(" +E ")" | "(" -E ")" | '+'F | '-'F | '!'F
+// F -> <NUMBER> | <BOOLEAN> | "(" R ")" | '+'F | '-'F | '!'F
 Expression factor():
 { Token t; Expression e;}
 {
       t=<NUMBER> { return new Num(Double.parseDouble(t.toString())); }
-	| "(" e=relation() ")" { return e; }
-	| ("-")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.MINUS);}
-	| ("+")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.PLUS);}
-	| "!"   e=factor() {return new Not(e);}
 	| t=<BOOLEAN> { return new Bool(Boolean.parseBoolean(t.toString()));}
+	| "(" e=relation() ")" { return e; }
+	| ("+")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.PLUS);}
+	| ("-")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.MINUS);}
+	| "!"   e=factor() {return new Not(e);}
 }

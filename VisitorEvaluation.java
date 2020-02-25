@@ -60,4 +60,10 @@ public class VisitorEvaluation implements Visitor<Double>{
     public Double visit(Bool b){
         return b.getValue() ? 1.0 : 0.0;
     }
+
+    @Override
+    public Double visit(Print p) {
+        //TODO: does visitor take return type of a function? Do we have to use an abstract factory?
+        return p.ex.accept(this);
+    }
 }// VisitorEvaluation

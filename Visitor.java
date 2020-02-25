@@ -12,4 +12,6 @@ public interface Visitor<T>
     T visit(Relation r);
     T visit(Not n);
     T visit(Bool b);
+
+    T visit(Print p);
 } // Visitor
