@@ -59,37 +59,37 @@ VisitorPrettyPrint v=new VisitorPrettyPrint();
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case 8:{
         jj_consume_token(8);
-        b = expression();
+        b = relation();
 a = new Relation(a,b,RelationOperator.INF);
         break;
         }
       case 9:{
         jj_consume_token(9);
-        b = expression();
+        b = relation();
 a = new Relation(a,b,RelationOperator.SUP);
         break;
         }
       case 10:{
         jj_consume_token(10);
-        b = expression();
+        b = relation();
 a = new Relation(a,b,RelationOperator.INF_EQ);
         break;
         }
       case 11:{
         jj_consume_token(11);
-        b = expression();
+        b = relation();
 a = new Relation(a,b,RelationOperator.SUP_EQ);
         break;
         }
       case 12:{
         jj_consume_token(12);
-        b = expression();
+        b = relation();
 a = new Relation(a,b,RelationOperator.EQ);
         break;
         }
       case 13:{
         jj_consume_token(13);
-        b = expression();
+        b = relation();
 a = new Not(new Relation(a,b,RelationOperator.EQ));
         break;
         }
@@ -207,7 +207,7 @@ a = new BinOp(a,b,BinarOperator.AND);
       }
     case 20:{
       jj_consume_token(20);
-      e = expression();
+      e = relation();
       jj_consume_token(21);
 {if ("" != null) return e;}
       break;

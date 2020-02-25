@@ -56,12 +56,12 @@ Expression relation():
 {
 	a=expression()
 	(
-	  "<" b=expression() { a = new Relation(a,b,RelationOperator.INF); } 
-	| ">" b=expression() { a = new Relation(a,b,RelationOperator.SUP); }
-	| "<=" b=expression() { a = new Relation(a,b,RelationOperator.INF_EQ); }
-	| ">=" b=expression() { a = new Relation(a,b,RelationOperator.SUP_EQ); }
-	| "==" b=expression() { a = new Relation(a,b,RelationOperator.EQ); }
-	| "<>" b=expression() { a = new Not(new Relation(a,b,RelationOperator.EQ)); }
+	  "<" b=relation() { a = new Relation(a,b,RelationOperator.INF); } 
+	| ">" b=relation() { a = new Relation(a,b,RelationOperator.SUP); }
+	| "<=" b=relation() { a = new Relation(a,b,RelationOperator.INF_EQ); }
+	| ">=" b=relation() { a = new Relation(a,b,RelationOperator.SUP_EQ); }
+	| "==" b=relation() { a = new Relation(a,b,RelationOperator.EQ); }
+	| "<>" b=relation() { a = new Not(new Relation(a,b,RelationOperator.EQ)); }
 	)? { return a; } 
 }
 
@@ -98,7 +98,7 @@ Expression factor():
 { Token t; Expression e;}
 {
       t=<NUMBER> { return new Num(Double.parseDouble(t.toString())); }
-	| "(" e=expression() ")" { return e; }
+	| "(" e=relation() ")" { return e; }
 	| ("-")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.MINUS);}
 	| ("+")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.PLUS);}
 	| "!"   e=factor() {return new Not(e);}
