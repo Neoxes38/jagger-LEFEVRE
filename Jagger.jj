@@ -62,7 +62,7 @@ Expression relation():
 	| ">=" b=expression() { a = new Relation(a,b,RelationOperator.SUP_EQ); }
 	| "==" b=expression() { a = new Relation(a,b,RelationOperator.EQ); }
 	| "<>" b=expression() { a = new Not(new Relation(a,b,RelationOperator.EQ)); }
-	) { return a; } 
+	)? { return a; } 
 }
 
 // Expression (the axiom).
