@@ -44,11 +44,21 @@ void mainloop():
 	  						a.accept(v);
 							System.out.println();
 							VisitorEvaluation vv = new VisitorEvaluation();
-							double d = a.accept(vv);
+							Double d = a.accept(vv);
 							System.out.println(d);
 	        }
     )*
     <EOF>
+}
+
+// Expression (the axiom).
+// T -> "if" R "then" R "else" R
+//TODO: What do we do with c?
+Expression ternary():
+{Expression a,b,c;}
+{
+    "if" a=relation() "then" b=relation() "else" c=relation()
+     { return new TernOp(a,b,c); }
 }
 
 // Expression (the axiom).
@@ -60,11 +70,11 @@ Expression print():
 }
 
 // Expression (the axiom).
-// R -> E ('<'R | '>'R | '<='R | '>='R | '=='R | '<>'R)
+// R -> (E|T) ('<'R | '>'R | '<='R | '>='R | '=='R | '<>'R)
 Expression relation():
 { Expression a, b; }
 {
-	a=expression()
+	(a=expression() | a=ternary())
 	(
 	  "<" b=relation() { a = new Relation(a,b,RelationOperator.INF); } 
 	| ">" b=relation() { a = new Relation(a,b,RelationOperator.SUP); }

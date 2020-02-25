@@ -1,5 +1,5 @@
 /**
- * Write a description of class VisiteurPrettyPrint here.
+ * Write a description of class VisitorPrettyPrint here.
  *
  * @author (your name)
  * @version (a version number or a date)
@@ -52,5 +52,19 @@ public class VisitorPrettyPrint implements Visitor<String>
         String s = p.ex.accept(this) ;
         System.out.print(")");
         return "print("+s+")";
+    }
+
+    @Override
+    public String visit(TernOp t) {
+        //TODO: Do we have to check types?
+        String s1, s2, s3;
+        System.out.print("IF ");
+        s1 = t.ifEx.accept(this);
+        System.out.print(" THEN ");
+        s2 = t.thenEx.accept(this);
+        System.out.print(" ELSE ");
+        s3 = t.elseEx.accept(this);
+
+        return "IF "+s1+" THEN "+s2+"ELSE"+s3;
     }
 } // VisitorPrettyPrint

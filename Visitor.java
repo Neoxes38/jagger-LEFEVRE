@@ -14,4 +14,5 @@ public interface Visitor<T>
     T visit(Bool b);
 
     T visit(Print p);
+    T visit(TernOp t);
 } // Visitor

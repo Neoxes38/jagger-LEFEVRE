@@ -24,9 +24,10 @@ public class Jagger implements JaggerConstants {
       case BOOLEAN:
       case PRINT:
       case 9:
-      case 17:
-      case 18:
-      case 23:{
+      case 12:
+      case 20:
+      case 21:
+      case 26:{
         ;
         break;
         }
@@ -42,9 +43,10 @@ public class Jagger implements JaggerConstants {
       case NUMBER:
       case BOOLEAN:
       case 9:
-      case 17:
-      case 18:
-      case 23:{
+      case 12:
+      case 20:
+      case 21:
+      case 26:{
         a = relation();
         break;
         }
@@ -58,80 +60,112 @@ VisitorPrettyPrint v=new VisitorPrettyPrint();
                                                         a.accept(v);
                                                         System.out.println();
                                                         VisitorEvaluation vv = new VisitorEvaluation();
-                                                        double d = a.accept(vv);
+                                                        Double d = a.accept(vv);
                                                         System.out.println(d);
     }
     jj_consume_token(0);
 }
 
 // Expression (the axiom).
+// T -> "if" R "then" R "else" R
+//TODO: What do we do with c?
+  static final public Expression ternary() throws ParseException {Expression a,b,c;
+    jj_consume_token(9);
+    a = relation();
+    jj_consume_token(10);
+    b = relation();
+    jj_consume_token(11);
+    c = relation();
+{if ("" != null) return new TernOp(a,b,c);}
+    throw new Error("Missing return statement in function");
+}
+
+// Expression (the axiom).
 // P -> "print(" R ")"
   static final public Expression print() throws ParseException {Expression e;
     jj_consume_token(PRINT);
-    jj_consume_token(9);
+    jj_consume_token(12);
     e = relation();
-    jj_consume_token(10);
+    jj_consume_token(13);
 {if ("" != null) return new Print(e);}
     throw new Error("Missing return statement in function");
 }
 
 // Expression (the axiom).
-// R -> E ('<'R | '>'R | '<='R | '>='R | '=='R | '<>'R)
+// R -> (E|T) ('<'R | '>'R | '<='R | '>='R | '=='R | '<>'R)
   static final public Expression relation() throws ParseException {Expression a, b;
-    a = expression();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case 11:
+    case NUMBER:
+    case BOOLEAN:
     case 12:
-    case 13:
+    case 20:
+    case 21:
+    case 26:{
+      a = expression();
+      break;
+      }
+    case 9:{
+      a = ternary();
+      break;
+      }
+    default:
+      jj_la1[2] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case 14:
     case 15:
-    case 16:{
+    case 16:
+    case 17:
+    case 18:
+    case 19:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 11:{
-        jj_consume_token(11);
-        b = relation();
-a = new Relation(a,b,RelationOperator.INF);
-        break;
-        }
-      case 12:{
-        jj_consume_token(12);
-        b = relation();
-a = new Relation(a,b,RelationOperator.SUP);
-        break;
-        }
-      case 13:{
-        jj_consume_token(13);
-        b = relation();
-a = new Relation(a,b,RelationOperator.INF_EQ);
-        break;
-        }
       case 14:{
         jj_consume_token(14);
         b = relation();
-a = new Relation(a,b,RelationOperator.SUP_EQ);
+a = new Relation(a,b,RelationOperator.INF);
         break;
         }
       case 15:{
         jj_consume_token(15);
         b = relation();
-a = new Relation(a,b,RelationOperator.EQ);
+a = new Relation(a,b,RelationOperator.SUP);
         break;
         }
       case 16:{
         jj_consume_token(16);
         b = relation();
+a = new Relation(a,b,RelationOperator.INF_EQ);
+        break;
+        }
+      case 17:{
+        jj_consume_token(17);
+        b = relation();
+a = new Relation(a,b,RelationOperator.SUP_EQ);
+        break;
+        }
+      case 18:{
+        jj_consume_token(18);
+        b = relation();
+a = new Relation(a,b,RelationOperator.EQ);
+        break;
+        }
+      case 19:{
+        jj_consume_token(19);
+        b = relation();
 a = new Not(new Relation(a,b,RelationOperator.EQ));
         break;
         }
       default:
-        jj_la1[2] = jj_gen;
+        jj_la1[3] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
       }
     default:
-      jj_la1[3] = jj_gen;
+      jj_la1[4] = jj_gen;
       ;
     }
 {if ("" != null) return a;}
@@ -143,37 +177,37 @@ a = new Not(new Relation(a,b,RelationOperator.EQ));
   static final public Expression expression() throws ParseException {Expression a,b;
     a = term();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case 17:
-    case 18:
-    case 19:{
+    case 20:
+    case 21:
+    case 22:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 17:{
-        jj_consume_token(17);
+      case 20:{
+        jj_consume_token(20);
         b = expression();
 a = new BinOp(a,b,BinarOperator.PLUS);
         break;
         }
-      case 18:{
-        jj_consume_token(18);
+      case 21:{
+        jj_consume_token(21);
         b = expression();
 a = new BinOp(a,b,BinarOperator.MINUS);
         break;
         }
-      case 19:{
-        jj_consume_token(19);
+      case 22:{
+        jj_consume_token(22);
         b = expression();
 a = new BinOp(a,b,BinarOperator.OR);
         break;
         }
       default:
-        jj_la1[4] = jj_gen;
+        jj_la1[5] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
       }
     default:
-      jj_la1[5] = jj_gen;
+      jj_la1[6] = jj_gen;
       ;
     }
 {if ("" != null) return a;}
@@ -187,37 +221,37 @@ a = new BinOp(a,b,BinarOperator.OR);
     label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 20:
-      case 21:
-      case 22:{
+      case 23:
+      case 24:
+      case 25:{
         ;
         break;
         }
       default:
-        jj_la1[6] = jj_gen;
+        jj_la1[7] = jj_gen;
         break label_2;
       }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 20:{
-        jj_consume_token(20);
+      case 23:{
+        jj_consume_token(23);
         b = factor();
 a = new BinOp(a,b,BinarOperator.MULT);
         break;
         }
-      case 21:{
-        jj_consume_token(21);
+      case 24:{
+        jj_consume_token(24);
         b = factor();
 a = new BinOp(a,b,BinarOperator.DIV);
         break;
         }
-      case 22:{
-        jj_consume_token(22);
+      case 25:{
+        jj_consume_token(25);
         b = factor();
 a = new BinOp(a,b,BinarOperator.AND);
         break;
         }
       default:
-        jj_la1[7] = jj_gen;
+        jj_la1[8] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -240,24 +274,24 @@ a = new BinOp(a,b,BinarOperator.AND);
 {if ("" != null) return new Bool(Boolean.parseBoolean(t.toString()));}
       break;
       }
-    case 9:{
-      jj_consume_token(9);
+    case 12:{
+      jj_consume_token(12);
       e = relation();
-      jj_consume_token(10);
+      jj_consume_token(13);
 {if ("" != null) return e;}
       break;
       }
-    case 17:{
+    case 20:{
       label_3:
       while (true) {
-        jj_consume_token(17);
+        jj_consume_token(20);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case 17:{
+        case 20:{
           ;
           break;
           }
         default:
-          jj_la1[8] = jj_gen;
+          jj_la1[9] = jj_gen;
           break label_3;
         }
       }
@@ -265,17 +299,17 @@ a = new BinOp(a,b,BinarOperator.AND);
 {if ("" != null) return new BinOp(new Num(0.0), e, BinarOperator.PLUS);}
       break;
       }
-    case 18:{
+    case 21:{
       label_4:
       while (true) {
-        jj_consume_token(18);
+        jj_consume_token(21);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case 18:{
+        case 21:{
           ;
           break;
           }
         default:
-          jj_la1[9] = jj_gen;
+          jj_la1[10] = jj_gen;
           break label_4;
         }
       }
@@ -283,14 +317,14 @@ a = new BinOp(a,b,BinarOperator.AND);
 {if ("" != null) return new BinOp(new Num(0.0), e, BinarOperator.MINUS);}
       break;
       }
-    case 23:{
-      jj_consume_token(23);
+    case 26:{
+      jj_consume_token(26);
       e = factor();
 {if ("" != null) return new Not(e);}
       break;
       }
     default:
-      jj_la1[10] = jj_gen;
+      jj_la1[11] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -307,13 +341,13 @@ a = new BinOp(a,b,BinarOperator.AND);
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[11];
+  static final private int[] jj_la1 = new int[12];
   static private int[] jj_la1_0;
   static {
 	   jj_la1_init_0();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x860350,0x860350,0x1f800,0x1f800,0xe0000,0xe0000,0x700000,0x700000,0x20000,0x40000,0x860250,};
+	   jj_la1_0 = new int[] {0x4301350,0x4301350,0x4301250,0xfc000,0xfc000,0x700000,0x700000,0x3800000,0x3800000,0x100000,0x200000,0x4301050,};
 	}
 
   /** Constructor with InputStream. */
@@ -334,7 +368,7 @@ a = new BinOp(a,b,BinarOperator.AND);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -348,7 +382,7 @@ a = new BinOp(a,b,BinarOperator.AND);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -365,7 +399,7 @@ a = new BinOp(a,b,BinarOperator.AND);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -383,7 +417,7 @@ a = new BinOp(a,b,BinarOperator.AND);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -399,7 +433,7 @@ a = new BinOp(a,b,BinarOperator.AND);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -408,7 +442,7 @@ a = new BinOp(a,b,BinarOperator.AND);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -459,12 +493,12 @@ a = new BinOp(a,b,BinarOperator.AND);
   /** Generate ParseException. */
   static public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[24];
+	 boolean[] la1tokens = new boolean[27];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
 	 }
-	 for (int i = 0; i < 11; i++) {
+	 for (int i = 0; i < 12; i++) {
 	   if (jj_la1[i] == jj_gen) {
 		 for (int j = 0; j < 32; j++) {
 		   if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -473,7 +507,7 @@ a = new BinOp(a,b,BinarOperator.AND);
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 24; i++) {
+	 for (int i = 0; i < 27; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;

@@ -66,4 +66,10 @@ public class VisitorEvaluation implements Visitor<Double>{
         //TODO: does visitor take return type of a function? Do we have to use an abstract factory?
         return p.ex.accept(this);
     }
+
+    @Override
+    public Double visit(TernOp t) {
+        double b = t.ifEx.accept(this);
+        return b!=0.0 ? t.thenEx.accept(this ) : t.elseEx.accept(this);
+    }
 }// VisitorEvaluation
