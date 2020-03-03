@@ -1,3 +1,4 @@
+package src;
 
 /**
  * Write a description of class Relation here.

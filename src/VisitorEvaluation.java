@@ -1,3 +1,5 @@
+package src;
+
 /**
  * Write a description of class VisitorEvaluation here.
  *
@@ -55,10 +57,6 @@ public class VisitorEvaluation implements Visitor<Double>{
     @Override
     public Double visit(Not n){
         return n.ex.accept(this)==1.0 ? 0.0 : 1.0;
-    }
-    @Override
-    public Double visit(Bool b){
-        return b.getValue() ? 1.0 : 0.0;
     }
 
     @Override

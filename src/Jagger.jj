@@ -3,7 +3,11 @@ options { LOOKAHEAD=1; FORCE_LA_CHECK=true; }
 // Fonction principale
 PARSER_BEGIN(Jagger)
 
+package src;
+import src.VisitorEvaluation;
+import src.VisitorTypeChecker;
 import java.io.*;
+
 public class Jagger
 {
     public static void main(String args[]) throws ParseException, FileNotFoundException
@@ -17,6 +21,7 @@ public class Jagger
 			parser = new Jagger(System.in);
         parser.mainloop();
     }
+
 }
 PARSER_END(Jagger)
 
@@ -28,7 +33,6 @@ TOKEN:
 {
     < NUMBER: (<DIGIT>)+ ("." (<DIGIT>)*)? >  // A decimal number.
 |   < DIGIT: ["0"-"9"] >                      // A decimal digit.
-|	< BOOLEAN: "true" | "false" >			  // A boolean.
 |   < EOL: "\n" >                             // End of line.
 |   < PRINT: "print" >                         // Print function.
 }
@@ -41,12 +45,17 @@ void mainloop():
     (
       (a=print() | a=relation())
       <EOL> {VisitorPrettyPrint v=new VisitorPrettyPrint();
-	  						a.accept(v);
-							System.out.println();
-							VisitorEvaluation vv = new VisitorEvaluation();
-							Double d = a.accept(vv);
-							System.out.println(d);
-	        }
+            a.accept(v);
+            System.out.println();
+            VisitorTypeChecker typeChecker = new VisitorTypeChecker();
+            a.accept(typeChecker);
+            if(!typeChecker.hasError()){
+                VisitorEvaluation vv = new VisitorEvaluation();
+                Double d = a.accept(vv);
+                System.out.println(d);
+            }else
+                System.out.println(typeChecker.getError());
+            }
     )*
     <EOF>
 }
@@ -118,7 +127,8 @@ Expression factor():
 { Token t; Expression e;}
 {
       t=<NUMBER> { return new Num(Double.parseDouble(t.toString())); }
-	| t=<BOOLEAN> { return new Bool(Boolean.parseBoolean(t.toString()));}
+	| "true" { return new Num(1.0);}
+	| "false" { return new Num(0.0);}
 	| "(" e=relation() ")" { return e; }
 	| ("+")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.PLUS);}
 	| ("-")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.MINUS);}

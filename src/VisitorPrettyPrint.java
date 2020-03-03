@@ -1,3 +1,5 @@
+package src;
+
 /**
  * Write a description of class VisitorPrettyPrint here.
  *
@@ -39,11 +41,6 @@ public class VisitorPrettyPrint implements Visitor<String>
         s = n.ex.accept(this);
         System.out.print(")");
         return "( NOT " + s + ")";
-    }
-    @Override
-    public String visit(Bool b){
-        System.out.print(b.getValue().toString());
-        return b.getValue().toString();
     }
 
     @Override

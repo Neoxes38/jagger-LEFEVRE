@@ -1,3 +1,5 @@
+package src;
+
 public class TernOp implements Expression {
     Expression ifEx, thenEx, elseEx;
 

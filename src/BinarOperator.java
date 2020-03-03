@@ -1,3 +1,4 @@
+package src;
 
 /**
  * Enumeration class Bop - write a description of the enum class here

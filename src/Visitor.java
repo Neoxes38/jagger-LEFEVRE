@@ -1,3 +1,5 @@
+package src;
+
 /**
  * Write a description of interface Visitor here.
  *
@@ -11,7 +13,6 @@ public interface Visitor<T>
     
     T visit(Relation r);
     T visit(Not n);
-    T visit(Bool b);
 
     T visit(Print p);
     T visit(TernOp t);
