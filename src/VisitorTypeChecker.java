@@ -22,7 +22,6 @@ public class VisitorTypeChecker implements Visitor<String> {
 
     @Override
     public String visit(Num n) {
-        System.out.println(n.getClass().getName());
         return n.getClass().getName();
     }
 
@@ -43,7 +42,6 @@ public class VisitorTypeChecker implements Visitor<String> {
         String t1, t2;
         t1 = r.lex.accept(this);
         t2 = r.rex.accept(this);
-        System.out.println(t1);
         hasError = !t1.equals(t2);
         if(hasError)
             buildError(t1, t2);

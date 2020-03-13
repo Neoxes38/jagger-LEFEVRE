@@ -5,7 +5,7 @@ import src.VisitorEvaluation;
 import src.VisitorTypeChecker;
 import java.io.*;
 
-public class Jagger implements JaggerConstants {
+public class Jagger implements src.JaggerConstants {
     public static void main(String args[]) throws ParseException, FileNotFoundException
     {
                 Jagger parser;

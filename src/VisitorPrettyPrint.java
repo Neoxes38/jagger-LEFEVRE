@@ -37,10 +37,10 @@ public class VisitorPrettyPrint implements Visitor<String>
     @Override
     public String visit(Not n){
         String s;
-        System.out.print("( NOT ");
+        System.out.print("(NOT ");
         s = n.ex.accept(this);
         System.out.print(")");
-        return "( NOT " + s + ")";
+        return "(NOT " + s + ")";
     }
 
     @Override
