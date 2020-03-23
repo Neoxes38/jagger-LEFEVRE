@@ -9,6 +9,7 @@ package src;
 public interface Visitor<T>
 {
     T visit(Num n);
+    T visit(Str s);
     T visit(BinOp b);
     
     T visit(Relation r);

@@ -22,8 +22,12 @@ public class VisitorTypeChecker implements Visitor<String> {
 
     @Override
     public String visit(Num n) {
-        System.out.println(n.getClass().getName());
         return n.getClass().getName();
+    }
+
+    @Override
+    public String visit(Str s) {
+        return s.getClass().getName();
     }
 
     @Override
@@ -34,7 +38,7 @@ public class VisitorTypeChecker implements Visitor<String> {
         hasError = !t1.equals(t2);
         if(hasError)
             buildError(t1, t2);
-        else return t1;
+        else return t2;
         return this.error;
     }
 
@@ -47,7 +51,7 @@ public class VisitorTypeChecker implements Visitor<String> {
         hasError = !t1.equals(t2);
         if(hasError)
             buildError(t1, t2);
-        else return t1;
+        else return t2;
         return this.error;
     }
 
@@ -63,14 +67,23 @@ public class VisitorTypeChecker implements Visitor<String> {
 
     @Override
     public String visit(TernOp t) {
-        String t1, t2, t3;
+        String t1, t2, t3, num_type = "src.Num";
         t1 = t.ifEx.accept(this);
         t2 = t.thenEx.accept(this);
-        t3 = t.thenEx.accept(this);
-        hasError = !t1.equals(t2);
-        if(hasError)
-            buildError(t1, t2);
-        else return t1;
-        return this.error;
+        t3 = t.elseEx.accept(this);
+
+        hasError = !t1.equals(num_type) ;
+        if(hasError) {
+            buildError(num_type, t1);
+            return this.error;
+        }
+
+        hasError = !t2.equals(t3);
+        if(hasError) {
+            buildError(t2, t3);
+            return this.error;
+        }
+
+        else return t3;
     }
 }

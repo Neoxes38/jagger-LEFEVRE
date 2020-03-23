@@ -32,6 +32,7 @@ SKIP: { " " | "\r" | "\t" }
 TOKEN:
 {
     < NUMBER: (<DIGIT>)+ ("." (<DIGIT>)*)? >  // A decimal number.
+|   < STR:  "\"" ((~["\n", "\r", "\""])*)? "\"">
 |   < DIGIT: ["0"-"9"] >                      // A decimal digit.
 |   < EOL: "\n" >                             // End of line.
 |   < PRINT: "print" >                         // Print function.
@@ -51,8 +52,8 @@ void mainloop():
             a.accept(typeChecker);
             if(!typeChecker.hasError()){
                 VisitorEvaluation vv = new VisitorEvaluation();
-                Double d = a.accept(vv);
-                System.out.println(d);
+                a.accept(vv);
+                System.out.println(vv.getResult());
             }else
                 System.out.println(typeChecker.getError());
             }
@@ -89,8 +90,7 @@ Expression relation():
 	| ">" b=relation() { a = new Relation(a,b,RelationOperator.SUP); }
 	| "<=" b=relation() { a = new Relation(a,b,RelationOperator.INF_EQ); }
 	| ">=" b=relation() { a = new Relation(a,b,RelationOperator.SUP_EQ); }
-	| "==" b=relation() { a = new Relation(a,b,RelationOperator.EQ); }
-	| "<>" b=relation() { a = new Not(new Relation(a,b,RelationOperator.EQ)); }
+	| "=" b=relation() { a = new Relation(a,b,RelationOperator.EQ); }
 	)? { return a; } 
 }
 
@@ -127,10 +127,11 @@ Expression factor():
 { Token t; Expression e;}
 {
       t=<NUMBER> { return new Num(Double.parseDouble(t.toString())); }
+    | t=<STR>  { return new Str(t.toString()); }
 	| "true" { return new Num(1.0);}
 	| "false" { return new Num(0.0);}
 	| "(" e=relation() ")" { return e; }
 	| ("+")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.PLUS);}
 	| ("-")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.MINUS);}
-	| "!"   e=factor() {return new Not(e);}
+	| "<>"   e=factor() {return new Not(e);}
 }

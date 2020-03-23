@@ -25,9 +25,10 @@ public class Jagger implements JaggerConstants {
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case NUMBER:
+      case STR:
       case PRINT:
-      case 8:
-      case 11:
+      case 9:
+      case 12:
       case 19:
       case 20:
       case 25:
@@ -46,8 +47,9 @@ public class Jagger implements JaggerConstants {
         break;
         }
       case NUMBER:
-      case 8:
-      case 11:
+      case STR:
+      case 9:
+      case 12:
       case 19:
       case 20:
       case 25:
@@ -69,8 +71,8 @@ VisitorPrettyPrint v=new VisitorPrettyPrint();
             a.accept(typeChecker);
             if(!typeChecker.hasError()){
                 VisitorEvaluation vv = new VisitorEvaluation();
-                Double d = a.accept(vv);
-                System.out.println(d);
+                a.accept(vv);
+                System.out.println(vv.getResult());
             }else
                 System.out.println(typeChecker.getError());
     }
@@ -81,11 +83,11 @@ VisitorPrettyPrint v=new VisitorPrettyPrint();
 // T -> "if" R "then" R "else" R
 //TODO: What do we do with c?
   static final public Expression ternary() throws ParseException {Expression a,b,c;
-    jj_consume_token(8);
-    a = relation();
     jj_consume_token(9);
-    b = relation();
+    a = relation();
     jj_consume_token(10);
+    b = relation();
+    jj_consume_token(11);
     c = relation();
 {if ("" != null) return new TernOp(a,b,c);}
     throw new Error("Missing return statement in function");
@@ -95,9 +97,9 @@ VisitorPrettyPrint v=new VisitorPrettyPrint();
 // P -> "print(" R ")"
   static final public Expression print() throws ParseException {Expression e;
     jj_consume_token(PRINT);
-    jj_consume_token(11);
-    e = relation();
     jj_consume_token(12);
+    e = relation();
+    jj_consume_token(13);
 {if ("" != null) return new Print(e);}
     throw new Error("Missing return statement in function");
 }
@@ -107,7 +109,8 @@ VisitorPrettyPrint v=new VisitorPrettyPrint();
   static final public Expression relation() throws ParseException {Expression a, b;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case NUMBER:
-    case 11:
+    case STR:
+    case 12:
     case 19:
     case 20:
     case 25:
@@ -116,7 +119,7 @@ VisitorPrettyPrint v=new VisitorPrettyPrint();
       a = expression();
       break;
       }
-    case 8:{
+    case 9:{
       a = ternary();
       break;
       }
@@ -126,47 +129,40 @@ VisitorPrettyPrint v=new VisitorPrettyPrint();
       throw new ParseException();
     }
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case 13:
     case 14:
     case 15:
     case 16:
     case 17:
     case 18:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 13:{
-        jj_consume_token(13);
-        b = relation();
-a = new Relation(a,b,RelationOperator.INF);
-        break;
-        }
       case 14:{
         jj_consume_token(14);
         b = relation();
-a = new Relation(a,b,RelationOperator.SUP);
+a = new Relation(a,b,RelationOperator.INF);
         break;
         }
       case 15:{
         jj_consume_token(15);
         b = relation();
-a = new Relation(a,b,RelationOperator.INF_EQ);
+a = new Relation(a,b,RelationOperator.SUP);
         break;
         }
       case 16:{
         jj_consume_token(16);
         b = relation();
-a = new Relation(a,b,RelationOperator.SUP_EQ);
+a = new Relation(a,b,RelationOperator.INF_EQ);
         break;
         }
       case 17:{
         jj_consume_token(17);
         b = relation();
-a = new Relation(a,b,RelationOperator.EQ);
+a = new Relation(a,b,RelationOperator.SUP_EQ);
         break;
         }
       case 18:{
         jj_consume_token(18);
         b = relation();
-a = new Not(new Relation(a,b,RelationOperator.EQ));
+a = new Relation(a,b,RelationOperator.EQ);
         break;
         }
       default:
@@ -281,6 +277,11 @@ a = new BinOp(a,b,BinarOperator.AND);
 {if ("" != null) return new Num(Double.parseDouble(t.toString()));}
       break;
       }
+    case STR:{
+      t = jj_consume_token(STR);
+{if ("" != null) return new Str(t.toString());}
+      break;
+      }
     case 25:{
       jj_consume_token(25);
 {if ("" != null) return new Num(1.0);}
@@ -291,10 +292,10 @@ a = new BinOp(a,b,BinarOperator.AND);
 {if ("" != null) return new Num(0.0);}
       break;
       }
-    case 11:{
-      jj_consume_token(11);
-      e = relation();
+    case 12:{
       jj_consume_token(12);
+      e = relation();
+      jj_consume_token(13);
 {if ("" != null) return e;}
       break;
       }
@@ -364,7 +365,7 @@ a = new BinOp(a,b,BinarOperator.AND);
 	   jj_la1_init_0();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0xe180990,0xe180990,0xe180910,0x7e000,0x7e000,0x380000,0x380000,0x1c00000,0x1c00000,0x80000,0x100000,0xe180810,};
+	   jj_la1_0 = new int[] {0xe181330,0xe181330,0xe181230,0x7c000,0x7c000,0x380000,0x380000,0x1c00000,0x1c00000,0x80000,0x100000,0xe181030,};
 	}
 
   /** Constructor with InputStream. */

@@ -11,8 +11,15 @@ public class VisitorPrettyPrint implements Visitor<String>
     @Override
     public String visit(Num n){
         System.out.print(n.getValue());
-        return n.getValue().toString();
-    }    
+        return n.toString();
+    }
+
+    @Override
+    public String visit(Str s) {
+        System.out.print(s.getValue());
+        return s.getValue();
+    }
+
     @Override
     public String visit(BinOp b){
         String s1, s2;
@@ -40,7 +47,7 @@ public class VisitorPrettyPrint implements Visitor<String>
         System.out.print("( NOT ");
         s = n.ex.accept(this);
         System.out.print(")");
-        return "( NOT " + s + ")";
+        return "(NOT " + s + ")";
     }
 
     @Override

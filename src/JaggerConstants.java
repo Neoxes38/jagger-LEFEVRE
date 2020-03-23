@@ -13,11 +13,13 @@ public interface JaggerConstants {
   /** RegularExpression Id. */
   int NUMBER = 4;
   /** RegularExpression Id. */
-  int DIGIT = 5;
+  int STR = 5;
   /** RegularExpression Id. */
-  int EOL = 6;
+  int DIGIT = 6;
   /** RegularExpression Id. */
-  int PRINT = 7;
+  int EOL = 7;
+  /** RegularExpression Id. */
+  int PRINT = 8;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -29,6 +31,7 @@ public interface JaggerConstants {
     "\"\\r\"",
     "\"\\t\"",
     "<NUMBER>",
+    "<STR>",
     "<DIGIT>",
     "\"\\n\"",
     "\"print\"",
@@ -41,8 +44,7 @@ public interface JaggerConstants {
     "\">\"",
     "\"<=\"",
     "\">=\"",
-    "\"==\"",
-    "\"<>\"",
+    "\"=\"",
     "\"+\"",
     "\"-\"",
     "\"||\"",
@@ -51,7 +53,7 @@ public interface JaggerConstants {
     "\"&&\"",
     "\"true\"",
     "\"false\"",
-    "\"!\"",
+    "\"<>\"",
   };
 
 }

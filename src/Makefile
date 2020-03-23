@@ -10,3 +10,5 @@ check:
 
 clear:
 	rm -r out/
+	rm *.class
+	rm *.ctxt
