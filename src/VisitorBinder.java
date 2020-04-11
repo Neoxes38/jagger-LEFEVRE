@@ -3,27 +3,11 @@ package src;
 import java.util.HashMap;
 import java.util.Stack;
 
-public class VisitorBinder implements Visitor {
+public class VisitorBinder extends AbstractVisitorError {
     private final Stack<HashMap<String, VarDecl>> envs;
-    private boolean hasError;
-    private String error;
 
     public VisitorBinder() {
         this.envs = new Stack<>();
-        this.hasError = false;
-        error = "";
-    }
-
-    private void buildError(String id) {
-        this.error = "Error: Var " + id + " is not defined.";
-    }
-
-    public boolean hasError() {
-        return this.hasError;
-    }
-
-    public String getError() {
-        return this.error;
     }
 
     @Override
@@ -79,8 +63,7 @@ public class VisitorBinder implements Visitor {
             }
 
         if (!hit) {
-            buildError(v.id);
-            hasError = true;
+            setError("Undefined variable: Var \"" + v.id + "\" is not defined.");
         }
     }
 

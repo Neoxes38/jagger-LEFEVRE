@@ -1,25 +1,12 @@
 package src;
 
-public class VisitorTypeChecker implements Visitor {
-    private boolean hasError;
-    private String error;
+public class VisitorTypeChecker extends AbstractVisitorError {
     private Types type;
 
-    public VisitorTypeChecker(){
-        this.hasError = false;
-        this.error = "";
-    }
-
-    public boolean hasError(){ return this.hasError; }
-    public String getError(){ return this.error; }
     public Types getType(){ return this.type; }
 
-    private void buildError(Types... s) {
-        StringBuilder res = new StringBuilder();
-        res.append("Error: Invalid type: ");
-        for (Types type : s)
-            res.append(type).append(" ");
-        this.error = res.toString();
+    public void buildError(Types expected, Types found) {
+        setError("Invalid type: \"" + expected +"\" was expected but \"" + found + "\" was found.");
     }
 
     @Override
@@ -38,8 +25,7 @@ public class VisitorTypeChecker implements Visitor {
         b.lex.accept(this);
         t1 = this.type;
         b.rex.accept(this);
-        hasError = !t1.equals(this.type);
-        if(hasError)
+        if(!t1.equals(this.type))
             buildError(t1, this.type);
     }
 
@@ -49,8 +35,7 @@ public class VisitorTypeChecker implements Visitor {
         r.lex.accept(this);
         t1 = this.type;
         r.rex.accept(this);
-        hasError = !t1.equals(this.type);
-        if(hasError)
+        if(!t1.equals(this.type))
             buildError(t1, this.type);
     }
 
@@ -69,8 +54,7 @@ public class VisitorTypeChecker implements Visitor {
         Types tmp;
         t.ifEx.accept(this);
 
-        hasError = !this.type.equals(Types.NUM) ;
-        if(hasError) {
+        if(!this.type.equals(Types.NUM)) {
             buildError(Types.NUM, this.type);
             return;
         }
@@ -79,8 +63,7 @@ public class VisitorTypeChecker implements Visitor {
         tmp = this.type;
         t.elseEx.accept(this);
 
-        hasError = !tmp.equals(this.type);
-        if(hasError)
+        if(!tmp.equals(this.type))
             buildError(tmp, this.type);
     }
 

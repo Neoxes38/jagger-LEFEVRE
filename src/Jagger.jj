@@ -4,8 +4,6 @@ options { LOOKAHEAD=1; FORCE_LA_CHECK=true; }
 PARSER_BEGIN(Jagger)
 
 package src;
-import src.VisitorEvaluation;
-import src.VisitorTypeChecker;
 import java.io.*;
 
 public class Jagger{
@@ -55,42 +53,42 @@ void mainloop():
     (
       (a=scope())
       {
-            {
-            System.out.println("\n>>> Process code...\n");
-            System.out.println("=======================================");
-            System.out.println("            Pretty Print               ");
-            System.out.println("=======================================");
-            VisitorPrettyPrint prettyPrint =new VisitorPrettyPrint();
-            a.accept(prettyPrint);
+      {
+      System.out.println("\n>>> Process code...\n");
+      System.out.println("=======================================");
+      System.out.println("            Pretty Print               ");
+      System.out.println("=======================================");
+      VisitorPrettyPrint prettyPrint =new VisitorPrettyPrint();
+      a.accept(prettyPrint);
 
-            System.out.println("=======================================");
-            System.out.println("                Binder                 ");
-            System.out.println("=======================================");
-            VisitorBinder binder = new VisitorBinder();
-            a.accept(binder);
-            if(binder.hasError()){
-                System.out.println(binder.getError());
-                break;
-            }else System.out.println("OK.");
+      System.out.println("=======================================");
+      System.out.println("                Binder                 ");
+      System.out.println("=======================================");
+      VisitorBinder binder = new VisitorBinder();
+      a.accept(binder);
+      if(binder.hasError()){
+          System.out.println(binder.getMessage());
+          break;
+      }else System.out.println("OK.");
 
-            System.out.println("=======================================");
-            System.out.println("             Type Checker              ");
-            System.out.println("=======================================");
-            VisitorTypeChecker typeChecker = new VisitorTypeChecker();
-            a.accept(typeChecker);
-            if(typeChecker.hasError()){
-                System.out.println(typeChecker.getError());
-                break;
-            }else System.out.println("OK.");
+      System.out.println("=======================================");
+      System.out.println("             Type Checker              ");
+      System.out.println("=======================================");
+      VisitorTypeChecker typeChecker = new VisitorTypeChecker();
+      a.accept(typeChecker);
+      if(typeChecker.hasError()){
+          System.out.println(typeChecker.getMessage());
+          break;
+      }else System.out.println("OK.");
 
-            System.out.println("=======================================");
-            System.out.println("               Evaluator               ");
-            System.out.println("=======================================");
-            VisitorEvaluation evaluator = new VisitorEvaluation();
-            a.accept(evaluator);
+      System.out.println("=======================================");
+      System.out.println("               Evaluator               ");
+      System.out.println("=======================================");
+      VisitorEvaluation evaluator = new VisitorEvaluation();
+      a.accept(evaluator);
 
-            }
       }
+}
     )*
     <EOF>
 }
