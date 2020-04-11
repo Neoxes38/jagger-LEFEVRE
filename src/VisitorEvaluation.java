@@ -46,6 +46,20 @@ public class VisitorEvaluation implements Visitor {
     @Override
     public void visit(BinOp b) {
         b.accept(typeChecker);
+        if (b.op == BinarOperator.ASSIGN) {
+            Var v = (Var) b.lex;
+            b.rex.accept(this);
+
+            switch (currentType) {
+                case NUM:
+                    v.d.e = new Num(this.resNum);
+                    return;
+                case STR:
+                    v.d.e = new Str(this.resStr);
+                    return;
+            }
+        }
+
         double d1 = 0.0, d2 = 0.0;
         String s1 = "", s2 = "";
 

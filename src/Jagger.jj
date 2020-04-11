@@ -117,13 +117,23 @@ void declaration():
      {currentScope.addVar(t.toString(), new VarDecl(t.toString(), e)); }
 }
 
+// Assignment (the axiom).
+// A -> <ID> ":=" R
+Expression assignment():
+{Token t;Expression e;}
+{
+    t=<ID> <ASSIGN> e=relation()
+     {return new BinOp(new Var(t.toString()), e, BinarOperator.ASSIGN); }
+}
+
 // Statement (the axiom).
-// St -> P | T | R | S
+// St -> P | T | R | S | A
 Expression statement():
 {Expression e;}
 {
 	(
 	  e=print()
+	| e=assignment()
 	| e=ternary()
 	| e=relation()
 	| e=scope()

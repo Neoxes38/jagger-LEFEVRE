@@ -123,12 +123,26 @@ s.addInstr(e);
 currentScope.addVar(t.toString(), new VarDecl(t.toString(), e));
 }
 
+// Assignment (the axiom).
+// A -> <ID> ":=" R
+  static final public Expression assignment() throws ParseException {Token t;Expression e;
+    t = jj_consume_token(ID);
+    jj_consume_token(ASSIGN);
+    e = relation();
+{if ("" != null) return new BinOp(new Var(t.toString()), e, BinarOperator.ASSIGN);}
+    throw new Error("Missing return statement in function");
+}
+
 // Statement (the axiom).
-// St -> P | T | R | S
+// St -> P | T | R | S | A
   static final public Expression statement() throws ParseException {Expression e;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case PRINT:{
       e = print();
+      break;
+      }
+    case ID:{
+      e = assignment();
       break;
       }
     case IF:{
@@ -139,7 +153,6 @@ currentScope.addVar(t.toString(), new VarDecl(t.toString(), e));
     case STR:
     case TRUE:
     case FALSE:
-    case ID:
     case 21:
     case 28:
     case 29:
