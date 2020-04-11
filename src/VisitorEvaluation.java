@@ -1,17 +1,18 @@
 package src;
 
+import java.util.Map;
+
 /**
  * Write a description of class VisitorEvaluation here.
  *
  * @author (your name)
  * @version (a version number or a date)
  */
-public class VisitorEvaluation implements Visitor<Double> {
+public class VisitorEvaluation implements Visitor {
     private Double resNum;
     private String resStr;
     private Types currentType;
-
-    VisitorTypeChecker typeChecker;
+    public VisitorTypeChecker typeChecker;
 
     public VisitorEvaluation() {
         typeChecker = new VisitorTypeChecker();
@@ -31,30 +32,30 @@ public class VisitorEvaluation implements Visitor<Double> {
     }
 
     @Override
-    public Double visit(Num n) {
+    public void visit(Num n) {
         currentType = Types.NUM;
         resNum = n.getValue();
-        return n.getValue();
     }
 
     @Override
-    public Double visit(Str s) {
+    public void visit(Str s) {
         currentType = Types.STR;
         resStr = s.getValue();
-        return 0.0;
     }
 
     @Override
-    public Double visit(BinOp b) {
-        String type = b.accept(typeChecker);
+    public void visit(BinOp b) {
+        b.accept(typeChecker);
         double d1 = 0.0, d2 = 0.0;
         String s1 = "", s2 = "";
 
-        if (type.equals(Types.NUM.toString())) {
-            d1 = b.lex.accept(this);
-            d2 = b.rex.accept(this);
+        if (typeChecker.getType().equals(Types.NUM)) {
+            b.lex.accept(this);
+            d1 = this.resNum;
+            b.rex.accept(this);
+            d2 = this.resNum;
             this.currentType = Types.NUM;
-        } else if (type.equals(Types.STR.toString())) {
+        } else if (typeChecker.getType().equals(Types.STR)) {
             b.lex.accept(this);
             s1 = this.resStr;
             b.rex.accept(this);
@@ -64,34 +65,39 @@ public class VisitorEvaluation implements Visitor<Double> {
 
         switch (b.op) {
             case PLUS:
-                if (type.equals(Types.NUM.toString())) {
+                if (typeChecker.getType().equals(Types.NUM)) {
                     this.resNum = d1 + d2;
-                } else if (type.equals(Types.STR.toString())) {
+                } else if (typeChecker.getType().equals(Types.STR)) {
                     this.resStr = s1 + s2;
                 }
                 break;
             case MINUS:
                 this.resNum = d1 - d2;
+                break;
             case MULT:
                 this.resNum = d1 * d2;
+                break;
             case DIV:
                 this.resNum = d1 / d2;
+                break;
             case AND:
                 this.resNum = d1 > 1.0 && d1 > 1.0 ? 1.0 : 0.0;
+                break;
             case OR:
                 this.resNum = d1 > 1.0 || d2 > 1.0 ? 1.0 : 0.0;
+                break;
         }
-
-        return 0.0;
     }
 
     @Override
-    public Double visit(Relation r) {
-        String type = r.accept(typeChecker);
+    public void visit(Relation r) {
+        r.accept(typeChecker);
         double d1, d2;
-        if (type.equals(Types.NUM.toString())) {
-            d1 = r.lex.accept(this);
-            d2 = r.rex.accept(this);
+        if (typeChecker.getType().equals(Types.NUM)) {
+            r.lex.accept(this);
+            d1 = this.resNum;
+            r.rex.accept(this);
+            d2 = this.resNum;
         } else {
             r.lex.accept(this);
             d1 = this.resStr.length();
@@ -118,40 +124,60 @@ public class VisitorEvaluation implements Visitor<Double> {
         }
 
         this.currentType = Types.NUM;
-        return -1.0;
     }
 
     @Override
-    public Double visit(Not n) {
+    public void visit(Not n) {
         this.currentType = Types.NUM;
-        this.resNum = n.ex.accept(this) != 0.0 ? 1.0 : 0.0;
-        return 0.0;
+        n.ex.accept(this);
+        this.resNum = this.resNum != 0.0 ? 1.0 : 0.0;
     }
 
     @Override
-    public Double visit(Print p) {
+    public void visit(Print p) {
         p.ex.accept(this);
         System.out.println(this.getResult());
         this.currentType = Types.VOID;
-        return 0.0;
     }
 
     @Override
-    public Double visit(TernOp t) {
-        String type = t.accept(typeChecker);
-        double b = t.ifEx.accept(this);
-        if (b != 0.0)
+    public void visit(TernOp t) {
+        t.accept(typeChecker);
+        t.ifEx.accept(this);
+        if (this.resNum != 0.0)
             t.thenEx.accept(this);
         else
             t.elseEx.accept(this);
 
-        if (type.equals("src.Num"))
+        if (typeChecker.getType().equals(Types.NUM))
             this.currentType = Types.NUM;
-        else if (type.equals("src.Str"))
+        else if (typeChecker.getType().equals(Types.STR))
             this.currentType = Types.STR;
         else
             this.currentType = Types.VOID;
+    }
 
-        return 0.0;
+    @Override
+    public void visit(VarDecl v) {
+        v.accept(this.typeChecker);
+        if (typeChecker.getType().equals(Types.NUM))
+            v.type = Types.NUM;
+        else if (typeChecker.getType().equals(Types.STR))
+            v.type = Types.STR;
+    }
+
+    @Override
+    public void visit(Var v) {
+        this.currentType = v.d.type;
+        v.d.e.accept(this);
+    }
+
+    @Override
+    public void visit(Scope s) {
+        for (VarDecl v : s.vars.values())
+            v.accept(this);
+
+        for (Expression e : s.instr)
+            e.accept(this);
     }
 }// VisitorEvaluation

@@ -1,8 +1,9 @@
 package src;
 
-public class VisitorTypeChecker implements Visitor<String> {
+public class VisitorTypeChecker implements Visitor {
     private boolean hasError;
     private String error;
+    private Types type;
 
     public VisitorTypeChecker(){
         this.hasError = false;
@@ -11,79 +12,97 @@ public class VisitorTypeChecker implements Visitor<String> {
 
     public boolean hasError(){ return this.hasError; }
     public String getError(){ return this.error; }
+    public Types getType(){ return this.type; }
 
-    private void buildError(String ...s){
+    private void buildError(Types... s) {
         StringBuilder res = new StringBuilder();
         res.append("Error: Invalid type: ");
-        for(String type: s)
+        for (Types type : s)
             res.append(type).append(" ");
         this.error = res.toString();
     }
 
     @Override
-    public String visit(Num n) {
-        return n.getClass().getName();
+    public void visit(Num n) {
+        this.type = Types.NUM;
     }
 
     @Override
-    public String visit(Str s) {
-        return s.getClass().getName();
+    public void visit(Str s) {
+        this.type = Types.STR;
     }
 
     @Override
-    public String visit(BinOp b) {
-        String t1, t2;
-        t1 = b.lex.accept(this);
-        t2 = b.rex.accept(this);
-        hasError = !t1.equals(t2);
+    public void visit(BinOp b) {
+        Types t1;
+        b.lex.accept(this);
+        t1 = this.type;
+        b.rex.accept(this);
+        hasError = !t1.equals(this.type);
         if(hasError)
-            buildError(t1, t2);
-        else return t2;
-        return this.error;
+            buildError(t1, this.type);
     }
 
     @Override
-    public String visit(Relation r) {
-        String t1, t2;
-        t1 = r.lex.accept(this);
-        t2 = r.rex.accept(this);
-        System.out.println(t1);
-        hasError = !t1.equals(t2);
+    public void visit(Relation r) {
+        Types t1;
+        r.lex.accept(this);
+        t1 = this.type;
+        r.rex.accept(this);
+        hasError = !t1.equals(this.type);
         if(hasError)
-            buildError(t1, t2);
-        else return t2;
-        return this.error;
+            buildError(t1, this.type);
     }
 
     @Override
-    public String visit(Not n) {
-        return n.ex.accept(this);
+    public void visit(Not n) {
+        n.ex.accept(this);
     }
 
     @Override
-    public String visit(Print p) {
-        return null;
+    public void visit(Print p) {
+        this.type = Types.VOID;
     }
 
     @Override
-    public String visit(TernOp t) {
-        String t1, t2, t3, num_type = "src.Num";
-        t1 = t.ifEx.accept(this);
-        t2 = t.thenEx.accept(this);
-        t3 = t.elseEx.accept(this);
+    public void visit(TernOp t) {
+        Types tmp;
+        t.ifEx.accept(this);
 
-        hasError = !t1.equals(num_type) ;
+        hasError = !this.type.equals(Types.NUM) ;
         if(hasError) {
-            buildError(num_type, t1);
-            return this.error;
+            buildError(Types.NUM, this.type);
+            return;
         }
 
-        hasError = !t2.equals(t3);
-        if(hasError) {
-            buildError(t2, t3);
-            return this.error;
+        t.thenEx.accept(this);
+        tmp = this.type;
+        t.elseEx.accept(this);
+
+        hasError = !tmp.equals(this.type);
+        if(hasError)
+            buildError(tmp, this.type);
+    }
+
+    @Override
+    public void visit(VarDecl v) {
+        v.e.accept(this);
+        v.type = this.type;
+    }
+
+    @Override
+    public void visit(Var v) {
+        this.type = v.d.type;
+    }
+
+    @Override
+    public void visit(Scope s) {
+        for(VarDecl v : s.vars.values()) {
+            v.e.accept(this);
+            v.type = this.type;
         }
 
-        else return t3;
+        for(Expression e : s.instr)
+            e.accept(this);
     }
-}
+} // VisitorTypeChecker

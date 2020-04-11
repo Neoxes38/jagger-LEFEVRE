@@ -6,15 +6,19 @@ package src;
  * @author (your name)
  * @version (a version number or a date)
  */
-public interface Visitor<T>
+public interface Visitor
 {
-    T visit(Num n);
-    T visit(Str s);
-    T visit(BinOp b);
-    
-    T visit(Relation r);
-    T visit(Not n);
+    void visit(Num n);
+    void visit(Str s);
+    void visit(BinOp b);
 
-    T visit(Print p);
-    T visit(TernOp t);
+    void visit(Relation r);
+    void visit(Not n);
+
+    void visit(Print p);
+    void visit(TernOp t);
+
+    void visit(VarDecl v);
+    void visit(Var v);
+    void visit(Scope s);
 } // Visitor

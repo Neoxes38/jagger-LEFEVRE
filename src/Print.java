@@ -5,5 +5,5 @@ public class Print implements Expression{
 
     public Print(Expression ex){ this.ex = ex; }
     @Override
-    public <T> T accept(Visitor<T> v) { return v.visit(this); }
-}// Print
+    public void accept(Visitor v){ v.visit(this); }
+} // Print

@@ -7,7 +7,5 @@ public class Str implements Expression {
     public String getValue(){ return this.value; }
 
     @Override
-    public <T> T accept(Visitor<T> v) {
-        return v.visit(this);
-    }
-}
+    public void accept(Visitor v){ v.visit(this); }
+} // Str

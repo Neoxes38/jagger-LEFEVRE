@@ -8,5 +8,5 @@ package src;
  */
 public interface  Expression
 {
-    <T> T accept(Visitor<T> v);
+    void accept(Visitor v);
 } // Expression
