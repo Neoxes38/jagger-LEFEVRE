@@ -29,7 +29,7 @@ SKIP: { " " | "\r" | "\t" | "\n" }
 TOKEN:
 {
     < NUMBER: (<DIGIT>)+ ("." (<DIGIT>)*)? >  // A decimal number.
-|   < STR:  "\"" ((~["\n", "\r", "\""])*)? "\"">
+|   < STR:  "\"" ((~["\""])*)? "\"">
 |   < DIGIT: ["0"-"9"] >                      // A decimal digit.
 |   < PRINT: "print" >                         // Print function.
 |   < LET: "let" >
@@ -47,7 +47,7 @@ TOKEN:
 |   < ID: ["a"-"z","A"-"Z"](["a"-"z","A"-"Z","0"-"9"])* > // Var id
 }
 
-// Main lopp: read expressions on a line until end of file.
+// Main loop: read expressions on a line until end of file.
 //     mainloop → (S)* <EOF>
 void mainloop():
 { Expression a; }

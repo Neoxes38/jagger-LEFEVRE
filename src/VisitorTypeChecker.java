@@ -91,10 +91,12 @@ public class VisitorTypeChecker extends AbstractVisitorError {
     @Override
     public void visit(While w) {
         w.cond.accept(this);
-
         if(!this.type.equals(Types.NUM)) {
             buildError(Types.NUM, this.type);
             return;
         }
+
+        for(Expression e : w.instrs)
+            e.accept(this);
     }
 } // VisitorTypeChecker
