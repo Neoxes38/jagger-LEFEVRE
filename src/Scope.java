@@ -5,11 +5,11 @@ import java.util.HashMap;
 
 public class Scope implements Expression {
     public HashMap<String, VarDecl> vars;
-    public ArrayList<Expression> instr;
+    public ArrayList<Expression> instrs;
 
     public Scope() {
         this.vars = new HashMap<>();
-        this.instr = new ArrayList<>();
+        this.instrs = new ArrayList<>();
     }
 
     public void addVar(String id, VarDecl d) {
@@ -21,7 +21,7 @@ public class Scope implements Expression {
     }
 
     public void addInstr(Expression e) {
-        this.instr.add(e);
+        this.instrs.add(e);
     }
 
     @Override

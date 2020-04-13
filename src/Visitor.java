@@ -21,4 +21,6 @@ public interface Visitor
     void visit(VarDecl v);
     void visit(Var v);
     void visit(Scope s);
+
+    void visit(While w);
 } // Visitor

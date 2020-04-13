@@ -39,7 +39,7 @@ public class VisitorPrettyPrint implements Visitor {
 
     @Override
     public void visit(Not n) {
-        System.out.print("( NOT ");
+        System.out.print("(NOT ");
         n.ex.accept(this);
         System.out.print(")");
     }
@@ -65,7 +65,7 @@ public class VisitorPrettyPrint implements Visitor {
     public void visit(VarDecl v) {
         System.out.print("(Var " + v.id + ":=");
         v.e.accept(this);
-        System.out.println(")");
+        System.out.print(")");
     }
 
     @Override
@@ -75,18 +75,19 @@ public class VisitorPrettyPrint implements Visitor {
 
     @Override
     public void visit(Scope s) {
-        this.scopeCnt++;
         printTab(0);
         System.out.println("LET");
+        this.scopeCnt++;
 
         for (VarDecl v : s.vars.values()) {
             printTab(1);
             v.accept(this);
+            System.out.println();
         }
         printTab(0);
         System.out.println("IN");
 
-        for (Expression e : s.instr) {
+        for (Expression e : s.instrs) {
             printTab(1);
             e.accept(this);
             System.out.print('\n');
@@ -95,6 +96,25 @@ public class VisitorPrettyPrint implements Visitor {
         System.out.print("END");
         this.scopeCnt--;
         if (this.scopeCnt == 0) System.out.println();
+    }
+
+    @Override
+    public void visit(While w) {
+        printTab(0);
+        System.out.print("WHILE ");
+        this.scopeCnt++;
+        w.cond.accept(this);
+        System.out.println(" DO(");
+
+        for (Expression e : w.instrs) {
+            printTab(1);
+            e.accept(this);
+            System.out.print('\n');
+        }
+
+        printTab(0);
+        System.out.println(")");
+        this.scopeCnt--;
     }
 
     private void printTab(final int sup) {

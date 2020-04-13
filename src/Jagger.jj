@@ -41,6 +41,8 @@ TOKEN:
 |   < IF: "if" >
 |   < THEN: "then" >
 |   < ELSE: "else" >
+|   < WHILE: "while">
+|   < DO: "do" >
 |   < VAR: "var" >
 |   < ID: ["a"-"z","A"-"Z"](["a"-"z","A"-"Z","0"-"9"])* > // Var id
 }
@@ -96,10 +98,10 @@ void mainloop():
 // Scope (the axiom).
 // S -> "let" (D)+ "in" St(,St)* "end"
 Expression scope():
-{Expression e; Scope s = new Scope(); currentScope=s;}
+{Expression e; Scope s = new Scope(); VarDecl d;}
 {
     <LET>
-        (declaration())*
+        (d=declaration(){s.addVar(d.id, d);})*
     <IN>
          e=statement(){s.addInstr(e);} ("," e=statement(){s.addInstr(e);})*
     <END>
@@ -108,11 +110,11 @@ Expression scope():
 
 // Declaration (the axiom).
 // D -> "var" <ID> ":=" R
-void declaration():
+VarDecl declaration():
 {Token t;Expression e;}
 {
     <VAR> t=<ID> <ASSIGN> e=relation()
-     {currentScope.addVar(t.toString(), new VarDecl(t.toString(), e)); }
+     {return new VarDecl(t.toString(), e); }
 }
 
 // Assignment (the axiom).
@@ -125,7 +127,7 @@ Expression assignment():
 }
 
 // Statement (the axiom).
-// St -> P | T | R | S | A
+// St -> P | T | R | S | A | W
 Expression statement():
 {Expression e;}
 {
@@ -133,9 +135,21 @@ Expression statement():
 	  e=print()
 	| e=assignment()
 	| e=ternary()
+	| e=while_loop()
 	| e=relation()
 	| e=scope()
+	| e=declaration()
 	){return e;}
+}
+
+// While Loop (the axiom).
+// W -> <WHILE> R <DO>"(" S(,S)* ")"
+Expression while_loop():
+{Expression cond, e; While w;}
+{
+    <WHILE> cond=relation(){w=new While(cond);}<DO> "(" e=statement(){w.addInstr(e);}
+     ("," e=statement(){w.addInstr(e);})* ")"
+     { return w; }
 }
 
 // Ternary (the axiom).
@@ -143,7 +157,7 @@ Expression statement():
 Expression ternary():
 {Expression a,b,c;}
 {
-    <IF> a=relation() <THEN> b=relation() <ELSE> c=relation()
+    <IF> a=relation() <THEN> b=statement() <ELSE> c=statement()
      { return new TernOp(a,b,c); }
 }
 

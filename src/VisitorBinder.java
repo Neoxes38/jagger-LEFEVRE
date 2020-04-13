@@ -49,6 +49,8 @@ public class VisitorBinder extends AbstractVisitorError {
 
     @Override
     public void visit(VarDecl v) {
+        v.e.accept(this);
+        this.envs.peek().put(v.id, v);
     }
 
     @Override
@@ -70,11 +72,21 @@ public class VisitorBinder extends AbstractVisitorError {
     @Override
     public void visit(Scope s) {
         this.envs.push(new HashMap<>());
-        for (VarDecl v : s.vars.values()) {
-            v.e.accept(this);
-            this.envs.peek().put(v.id, v);
-        }
-        for (Expression e : s.instr)
+
+        for (VarDecl v : s.vars.values())
+            v.accept(this);
+        for (Expression e : s.instrs)
+            e.accept(this);
+
+        this.envs.pop();
+    }
+
+    @Override
+    public void visit(While w) {
+        this.envs.push(new HashMap<>());
+
+        w.cond.accept(this);
+        for (Expression e : w.instrs)
             e.accept(this);
 
         this.envs.pop();

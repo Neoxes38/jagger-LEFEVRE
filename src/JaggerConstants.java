@@ -37,9 +37,13 @@ public interface JaggerConstants {
   /** RegularExpression Id. */
   int ELSE = 17;
   /** RegularExpression Id. */
-  int VAR = 18;
+  int WHILE = 18;
   /** RegularExpression Id. */
-  int ID = 19;
+  int DO = 19;
+  /** RegularExpression Id. */
+  int VAR = 20;
+  /** RegularExpression Id. */
+  int ID = 21;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -64,6 +68,8 @@ public interface JaggerConstants {
     "\"if\"",
     "\"then\"",
     "\"else\"",
+    "\"while\"",
+    "\"do\"",
     "\"var\"",
     "<ID>",
     "\",\"",

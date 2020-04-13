@@ -1,7 +1,5 @@
 package src;
 
-import java.util.Map;
-
 /**
  * Write a description of class VisitorEvaluation here.
  *
@@ -45,7 +43,6 @@ public class VisitorEvaluation implements Visitor {
 
     @Override
     public void visit(BinOp b) {
-        b.accept(typeChecker);
         if (b.op == BinarOperator.ASSIGN) {
             Var v = (Var) b.lex;
             b.rex.accept(this);
@@ -60,6 +57,7 @@ public class VisitorEvaluation implements Visitor {
             }
         }
 
+        b.accept(typeChecker);
         double d1 = 0.0, d2 = 0.0;
         String s1 = "", s2 = "";
 
@@ -95,10 +93,10 @@ public class VisitorEvaluation implements Visitor {
                 this.resNum = d1 / d2;
                 break;
             case AND:
-                this.resNum = d1 > 1.0 && d1 > 1.0 ? 1.0 : 0.0;
+                this.resNum = d1 >= 1.0 && d1 >= 1.0 ? 1.0 : 0.0;
                 break;
             case OR:
-                this.resNum = d1 > 1.0 || d2 > 1.0 ? 1.0 : 0.0;
+                this.resNum = d1 >= 1.0 || d2 >= 1.0 ? 1.0 : 0.0;
                 break;
         }
     }
@@ -144,7 +142,7 @@ public class VisitorEvaluation implements Visitor {
     public void visit(Not n) {
         this.currentType = Types.NUM;
         n.ex.accept(this);
-        this.resNum = this.resNum != 0.0 ? 1.0 : 0.0;
+        this.resNum = this.resNum != 0.0 ? 0.0 : 1.0;
     }
 
     @Override
@@ -191,7 +189,17 @@ public class VisitorEvaluation implements Visitor {
         for (VarDecl v : s.vars.values())
             v.accept(this);
 
-        for (Expression e : s.instr)
+        for (Expression e : s.instrs)
             e.accept(this);
+    }
+
+    @Override
+    public void visit(While w) {
+        w.cond.accept(this);
+        while (resNum>0) {
+            for(Expression e : w.instrs)
+                e.accept(this);
+            w.cond.accept(this);
+        }
     }
 }// VisitorEvaluation
