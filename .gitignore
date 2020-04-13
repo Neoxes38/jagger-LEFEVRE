@@ -1,3 +1,10 @@
+src/Token*.java
+src/Jagger*.java
+src/SimpleCharStream.java
+src/ParseException.java
+
+tests/test.txt
+
 *.ctxt
 *.class
 *.bluej
