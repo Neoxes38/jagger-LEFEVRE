@@ -31,7 +31,7 @@ TOKEN:
     < NUMBER: (<DIGIT>)+ ("." (<DIGIT>)*)? >  // A decimal number.
 |   < STR:  "\"" ((~["\""])*)? "\"">
 |   < DIGIT: ["0"-"9"] >                      // A decimal digit.
-|   < PRINT: "print" >                         // Print function.
+|   < PRINT: "print" >                        // Print function.
 |   < LET: "let" >
 |   < IN: "in" >
 |   < END: "end" >
@@ -43,6 +43,8 @@ TOKEN:
 |   < ELSE: "else" >
 |   < WHILE: "while">
 |   < DO: "do" >
+|   < FOR: "for" >
+|   < TO: "to" >
 |   < VAR: "var" >
 |   < ID: ["a"-"z","A"-"Z"](["a"-"z","A"-"Z","0"-"9"])* > // Var id
 }
@@ -108,42 +110,8 @@ Expression scope():
      { return s; }
 }
 
-// Declaration (the axiom).
-// D -> "var" <ID> ":=" R
-VarDecl declaration():
-{Token t;Expression e;}
-{
-    <VAR> t=<ID> <ASSIGN> e=relation()
-     {return new VarDecl(t.toString(), e); }
-}
-
-// Assignment (the axiom).
-// A -> <ID> ":=" R
-Expression assignment():
-{Token t;Expression e;}
-{
-    t=<ID> <ASSIGN> e=relation()
-     {return new BinOp(new Var(t.toString()), e, BinarOperator.ASSIGN); }
-}
-
-// Statement (the axiom).
-// St -> P | T | R | S | A | W
-Expression statement():
-{Expression e;}
-{
-	(
-	  e=print()
-	| e=assignment()
-	| e=ternary()
-	| e=while_loop()
-	| e=relation()
-	| e=scope()
-	| e=declaration()
-	){return e;}
-}
-
 // While Loop (the axiom).
-// W -> <WHILE> R <DO>"(" S(,S)* ")"
+// W -> <WHILE> R <DO>"(" St(,St)* ")"
 Expression while_loop():
 {Expression cond, e; While w;}
 {
@@ -152,8 +120,61 @@ Expression while_loop():
      { return w; }
 }
 
+// For Loop (the axiom).
+// F -> <FOR> R <TO> R <DO> "(" St(,St)* ")"
+Expression for_loop():
+{Token t;Expression s, e, v; VarDecl d; While w;}
+{
+    <FOR> t=<ID> <ASSIGN> s=relation() <TO> e=relation() {
+        d=new VarDecl(t.toString(), s);
+        v=new Var(d.id);
+        w=new While(new Relation(v,e,RelationOperator.INF_EQ));
+        w.addVar(d.id, d);
+    }
+    <DO>  "(" e=statement(){w.addInstr(e);}
+               ("," e=statement(){w.addInstr(e);})* ")"{
+        w.addInstr(new BinOp(v,new BinOp(v, new Num(1.0), BinarOperator.PLUS),BinarOperator.ASSIGN));
+        return w;
+        return s;
+    }
+}
+
+// Declaration (the axiom).
+// D -> <VAR> <ID> <ASSIGN> R
+VarDecl declaration():
+{Token t;Expression e;}
+{
+    <VAR> t=<ID> <ASSIGN> e=relation()
+     {return new VarDecl(t.toString(), e); }
+}
+
+// Assignment (the axiom).
+// A -> <ID> <ASSIGN> R
+Expression assignment():
+{Token t;Expression e;}
+{
+    t=<ID> <ASSIGN> e=relation()
+     {return new BinOp(new Var(t.toString()), e, BinarOperator.ASSIGN); }
+}
+
+// Statement (the axiom).
+// St -> P | A | T | W | F | S | D
+Expression statement():
+{Expression e;}
+{
+	(
+	  e=print()
+	| e=assignment()
+	| e=ternary()
+	| e=while_loop()
+	| e=for_loop()
+	| e=scope()
+	| e=declaration()
+	){return e;}
+}
+
 // Ternary (the axiom).
-// T -> "if" R "then" R "else" R
+// T -> <IF> R <THEN> St <ELSE> St
 Expression ternary():
 {Expression a,b,c;}
 {
@@ -162,7 +183,7 @@ Expression ternary():
 }
 
 // Print (the axiom).
-// P -> "print(" R ")"
+// P -> <PRINT> "(" R ")"
 Expression print():
 {Expression e;}
 {
@@ -170,18 +191,18 @@ Expression print():
 }
 
 // Relation (the axiom).
-// R -> (E|T) ('<'R | '>'R | '<='R | '>='R | '=='R | '<>'R)
+// R -> (E|T) ('<'R | '>'R | '<='R | '>='R | '='R)
 Expression relation():
 { Expression a, b; }
 {
 	(a=expression() | a=ternary())
 	(
-	  "<" b=relation() { a = new Relation(a,b,RelationOperator.INF); } 
+	  "<" b=relation() { a = new Relation(a,b,RelationOperator.INF); }
 	| ">" b=relation() { a = new Relation(a,b,RelationOperator.SUP); }
 	| "<=" b=relation() { a = new Relation(a,b,RelationOperator.INF_EQ); }
 	| ">=" b=relation() { a = new Relation(a,b,RelationOperator.SUP_EQ); }
 	| "=" b=relation() { a = new Relation(a,b,RelationOperator.EQ); }
-	)? { return a; } 
+	)? { return a; }
 }
 
 // Expression (the axiom).
@@ -211,7 +232,7 @@ Expression term():
 }
 
 // Factor (the axiom).
-// F -> <NUMBER> | <BOOLEAN> | "(" R ")" | '+'F | '-'F | '!'F
+// F -> <NUMBER> | <ID> | <STR> | <TRUE> | <FALSE> | "(" R ")" | '+'F | '-'F | '<>'F
 Expression factor():
 { Token t; Expression e;}
 {

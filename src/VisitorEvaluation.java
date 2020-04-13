@@ -195,6 +195,8 @@ public class VisitorEvaluation implements Visitor {
 
     @Override
     public void visit(While w) {
+        for (VarDecl v : w.vars.values())
+            v.accept(this);
         w.cond.accept(this);
         while (resNum>0) {
             for(Expression e : w.instrs)
