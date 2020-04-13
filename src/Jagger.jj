@@ -4,12 +4,10 @@ options { LOOKAHEAD=1; FORCE_LA_CHECK=true; }
 PARSER_BEGIN(Jagger)
 
 package src;
-import src.VisitorEvaluation;
-import src.VisitorTypeChecker;
 import java.io.*;
 
-public class Jagger
-{
+public class Jagger{
+    private static Scope currentScope;
     public static void main(String args[]) throws ParseException, FileNotFoundException
     {
 		Jagger parser;
@@ -21,56 +19,149 @@ public class Jagger
 			parser = new Jagger(System.in);
         parser.mainloop();
     }
-
 }
 PARSER_END(Jagger)
 
 // Characters to ignore.
-SKIP: { " " | "\r" | "\t" }
+SKIP: { " " | "\r" | "\t" | "\n" }
 
 // Token specifications.
 TOKEN:
 {
     < NUMBER: (<DIGIT>)+ ("." (<DIGIT>)*)? >  // A decimal number.
+|   < STR:  "\"" ((~["\n", "\r", "\""])*)? "\"">
 |   < DIGIT: ["0"-"9"] >                      // A decimal digit.
-|   < EOL: "\n" >                             // End of line.
 |   < PRINT: "print" >                         // Print function.
+|   < LET: "let" >
+|   < IN: "in" >
+|   < END: "end" >
+|   < ASSIGN: ":=" >
+|   < TRUE: "true" >
+|   < FALSE: "false" >
+|   < IF: "if" >
+|   < THEN: "then" >
+|   < ELSE: "else" >
+|   < WHILE: "while">
+|   < DO: "do" >
+|   < VAR: "var" >
+|   < ID: ["a"-"z","A"-"Z"](["a"-"z","A"-"Z","0"-"9"])* > // Var id
 }
 
 // Main lopp: read expressions on a line until end of file.
-//     mainloop → ((P | E) <EOL>)* <EOF>
+//     mainloop → (S)* <EOF>
 void mainloop():
 { Expression a; }
 {
     (
-      (a=print() | a=relation())
-      <EOL> {VisitorPrettyPrint v=new VisitorPrettyPrint();
-            a.accept(v);
-            System.out.println();
-            VisitorTypeChecker typeChecker = new VisitorTypeChecker();
-            a.accept(typeChecker);
-            if(!typeChecker.hasError()){
-                VisitorEvaluation vv = new VisitorEvaluation();
-                Double d = a.accept(vv);
-                System.out.println(d);
-            }else
-                System.out.println(typeChecker.getError());
-            }
+      (a=scope())
+      {
+      {
+      System.out.println("\n>>> Process code...\n");
+      System.out.println("=======================================");
+      System.out.println("            Pretty Print               ");
+      System.out.println("=======================================");
+      VisitorPrettyPrint prettyPrint =new VisitorPrettyPrint();
+      a.accept(prettyPrint);
+
+      System.out.println("=======================================");
+      System.out.println("                Binder                 ");
+      System.out.println("=======================================");
+      VisitorBinder binder = new VisitorBinder();
+      a.accept(binder);
+      if(binder.hasError()){
+          System.out.println(binder.getMessage());
+          break;
+      }else System.out.println("OK.");
+
+      System.out.println("=======================================");
+      System.out.println("             Type Checker              ");
+      System.out.println("=======================================");
+      VisitorTypeChecker typeChecker = new VisitorTypeChecker();
+      a.accept(typeChecker);
+      if(typeChecker.hasError()){
+          System.out.println(typeChecker.getMessage());
+          break;
+      }else System.out.println("OK.");
+
+      System.out.println("=======================================");
+      System.out.println("               Evaluator               ");
+      System.out.println("=======================================");
+      VisitorEvaluation evaluator = new VisitorEvaluation();
+      a.accept(evaluator);
+
+      }
+}
     )*
     <EOF>
 }
 
-// Expression (the axiom).
+// Scope (the axiom).
+// S -> "let" (D)+ "in" St(,St)* "end"
+Expression scope():
+{Expression e; Scope s = new Scope(); VarDecl d;}
+{
+    <LET>
+        (d=declaration(){s.addVar(d.id, d);})*
+    <IN>
+         e=statement(){s.addInstr(e);} ("," e=statement(){s.addInstr(e);})*
+    <END>
+     { return s; }
+}
+
+// Declaration (the axiom).
+// D -> "var" <ID> ":=" R
+VarDecl declaration():
+{Token t;Expression e;}
+{
+    <VAR> t=<ID> <ASSIGN> e=relation()
+     {return new VarDecl(t.toString(), e); }
+}
+
+// Assignment (the axiom).
+// A -> <ID> ":=" R
+Expression assignment():
+{Token t;Expression e;}
+{
+    t=<ID> <ASSIGN> e=relation()
+     {return new BinOp(new Var(t.toString()), e, BinarOperator.ASSIGN); }
+}
+
+// Statement (the axiom).
+// St -> P | T | R | S | A | W
+Expression statement():
+{Expression e;}
+{
+	(
+	  e=print()
+	| e=assignment()
+	| e=ternary()
+	| e=while_loop()
+	| e=relation()
+	| e=scope()
+	| e=declaration()
+	){return e;}
+}
+
+// While Loop (the axiom).
+// W -> <WHILE> R <DO>"(" S(,S)* ")"
+Expression while_loop():
+{Expression cond, e; While w;}
+{
+    <WHILE> cond=relation(){w=new While(cond);}<DO> "(" e=statement(){w.addInstr(e);}
+     ("," e=statement(){w.addInstr(e);})* ")"
+     { return w; }
+}
+
+// Ternary (the axiom).
 // T -> "if" R "then" R "else" R
-//TODO: What do we do with c?
 Expression ternary():
 {Expression a,b,c;}
 {
-    "if" a=relation() "then" b=relation() "else" c=relation()
+    <IF> a=relation() <THEN> b=statement() <ELSE> c=statement()
      { return new TernOp(a,b,c); }
 }
 
-// Expression (the axiom).
+// Print (the axiom).
 // P -> "print(" R ")"
 Expression print():
 {Expression e;}
@@ -78,7 +169,7 @@ Expression print():
     <PRINT> "(" e=relation()  ")" { return new Print(e); }
 }
 
-// Expression (the axiom).
+// Relation (the axiom).
 // R -> (E|T) ('<'R | '>'R | '<='R | '>='R | '=='R | '<>'R)
 Expression relation():
 { Expression a, b; }
@@ -89,8 +180,7 @@ Expression relation():
 	| ">" b=relation() { a = new Relation(a,b,RelationOperator.SUP); }
 	| "<=" b=relation() { a = new Relation(a,b,RelationOperator.INF_EQ); }
 	| ">=" b=relation() { a = new Relation(a,b,RelationOperator.SUP_EQ); }
-	| "==" b=relation() { a = new Relation(a,b,RelationOperator.EQ); }
-	| "<>" b=relation() { a = new Not(new Relation(a,b,RelationOperator.EQ)); }
+	| "=" b=relation() { a = new Relation(a,b,RelationOperator.EQ); }
 	)? { return a; } 
 }
 
@@ -107,7 +197,7 @@ Expression expression():
     )? { return a; }
 }
 
-// Term.
+// Term (the axiom).
 // T -> F ('*'F | '/'F | '&&'F)*
 Expression term():
 { Expression a,b; }
@@ -120,17 +210,18 @@ Expression term():
     )* { return a; }
 }
 
-
-// Factor of an expression.
+// Factor (the axiom).
 // F -> <NUMBER> | <BOOLEAN> | "(" R ")" | '+'F | '-'F | '!'F
 Expression factor():
 { Token t; Expression e;}
 {
       t=<NUMBER> { return new Num(Double.parseDouble(t.toString())); }
-	| "true" { return new Num(1.0);}
-	| "false" { return new Num(0.0);}
+    | t=<ID> { return new Var(t.toString());}
+    | t=<STR>  { return new Str(t.toString()); }
+	| <TRUE> { return new Num(1.0);}
+	| <FALSE> { return new Num(0.0);}
 	| "(" e=relation() ")" { return e; }
 	| ("+")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.PLUS);}
 	| ("-")+  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.MINUS);}
-	| "!"   e=factor() {return new Not(e);}
+	| "<>"   e=factor() {return new Not(e);}
 }

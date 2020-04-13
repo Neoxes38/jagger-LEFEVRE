@@ -6,8 +6,7 @@ package src;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class Relation implements Expression
-{
+public class Relation implements Expression{
     Expression lex, rex;
     RelationOperator op;
     
@@ -16,5 +15,5 @@ public class Relation implements Expression
         this.rex = rex;
         this.op = op;
     }
-    public <T> T accept(Visitor<T> v){ return v.visit(this); } 
+    public void accept(Visitor v){ v.visit(this); }
 }

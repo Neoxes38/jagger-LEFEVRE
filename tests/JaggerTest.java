@@ -79,11 +79,11 @@ public class JaggerTest extends junit.framework.TestCase{
         double eval;
 
         // Tests
-        testOperator("0\n", "0.0\r", 0.0);
-        testOperator("5\n", "5.0\r", 5.0);
-        testOperator("-2\n", "(0.0 MINUS 2.0)\r", -2.0);
-        testOperator("!1\n", "(NOT 1.0)\r", 0.0);
-        testOperator("!0\n", "(NOT 0.0)\r", 1.0);
+        testOperator("let in print(0) end\n", "LET IN \tprint(0.0)\nEND ", "0.0 ");
+        testOperator("let in print(5) end\n", "LET IN \tprint(5.0)\nEND ", "5.0 ");
+        testOperator("let in print(-2) end\n", "LET IN \tprint((0.0 MINUS 2.0))\nEND ", "-2.0 ");
+        testOperator("let in print(<>1) end\n", "LET IN \tprint((NOT 1.0))\nEND ", "0.0 ");
+        testOperator("let in print(<>0) end\n", "LET IN \tprint((NOT 0.0))\nEND ", "1.0 ");
 
     }
 
@@ -95,19 +95,20 @@ public class JaggerTest extends junit.framework.TestCase{
         new Jagger(is);
 
         // Tests
-        testOperator("2+3\n", "(2.0 PLUS 3.0)\r", 5.0);
-        testOperator("2-3\n", "(2.0 MINUS 3.0)\r", -1.0);
-        testOperator("3-2\n", "(3.0 MINUS 2.0)\r", 1.0);
-        testOperator("2*3\n", "(2.0 MULT 3.0)\r", 6.0);
-        testOperator("6/3\n", "(6.0 DIV 3.0)\r", 2.0);
-        testOperator("2/3\n", "(2.0 DIV 3.0)\r", 0.6666666666666666);
-        testOperator("2/4\n", "(2.0 DIV 4.0)\r", 0.5);
-        testOperator("1&&1\n", "(1.0 AND 1.0)\r", 1.0);
-        testOperator("1&&0\n", "(1.0 AND 0.0)\r", 0.0);
-        testOperator("0&&0\n", "(0.0 AND 0.0)\r", 0.0);
-        testOperator("1||1\n", "(1.0 OR 1.0)\r", 1.0);
-        testOperator("1||0\n", "(1.0 OR 0.0)\r", 1.0);
-        testOperator("0||0\n", "(0.0 OR 0.0)\r", 0.0);
+        testOperator("let in print(2+3) end\n", "LET IN \tprint((2.0 PLUS 3.0))\nEND ", "5.0 ");
+        testOperator("let in print(2-3) end\n", "LET IN \tprint((2.0 MINUS 3.0))\nEND ", "-1.0 ");
+        testOperator("let in print(3-2) end\n", "LET IN \tprint((3.0 MINUS 2.0))\nEND ", "1.0 ");
+        testOperator("let in print(2*3) end\n", "LET IN \tprint((2.0 MULT 3.0))\nEND ", "6.0 ");
+        testOperator("let in print(6/3) end\n", "LET IN \tprint((6.0 DIV 3.0))\nEND ", "2.0 ");
+        testOperator("let in print(2/3) end\n", "LET IN \tprint((2.0 DIV 3.0))\nEND ", "0.6666666666666666 ");
+        testOperator("let in print(2/4) end\n", "LET IN \tprint((2.0 DIV 4.0))\nEND ", "0.5 ");
+        testOperator("let in print(1&&1) end\n", "LET IN \tprint((1.0 AND 1.0))\nEND ", "1.0 ");
+        testOperator("let in print(1&&0) end\n", "LET IN \tprint((1.0 AND 0.0))\nEND ", "0.0 ");
+        testOperator("let in print(0&&0) end\n", "LET IN \tprint((0.0 AND 0.0))\nEND ", "0.0 ");
+        testOperator("let in print(1||1) end\n", "LET IN \tprint((1.0 OR 1.0))\nEND ", "1.0 ");
+        testOperator("let in print(1||0) end\n", "LET IN \tprint((1.0 OR 0.0))\nEND ", "1.0 ");
+        testOperator("let in print(0||0) end\n", "LET IN \tprint((0.0 OR 0.0))\nEND ", "0.0 ");
+        testOperator("let var a:=0 in a:=1, print(a) end\n", "LET \t(Var a:=0.0) IN \t(a ASSIGN 1.0)\n\tprint(a)\nEND ", "1.0 ");
 
     }
 
@@ -116,11 +117,12 @@ public class JaggerTest extends junit.framework.TestCase{
         double eval;
 
         // Tests
-        testOperator("if 1 then 1 else 0\n", "IF 1.0 THEN 1.0 ELSE 0.0\r", 1.0);
-        testOperator("if 0 then 1 else 0\n", "IF 0.0 THEN 1.0 ELSE 0.0\r", 0.0);
-        testOperator("2+-3\n", "(2.0 PLUS (0.0 MINUS 3.0))\r", -1.0);
-        testOperator("2*-3\n", "(2.0 MULT (0.0 MINUS 3.0))\r", -6.0);
-        testOperator("6/-3\n", "(6.0 DIV (0.0 MINUS 3.0))\r", -2.0);
+        testOperator("let in if 1 then print(\"true\") else print(\"false\") end\n", "LET IN \tIF 1.0 THEN print(true) ELSE print(false)\nEND ", "true ");
+        testOperator("let in if 0 then print(\"true\") else print(\"false\") end\n", "LET IN \tIF 0.0 THEN print(true) ELSE print(false)\nEND ", "false ");
+        testOperator("let in print(2+-3) end\n", "LET IN \tprint((2.0 PLUS (0.0 MINUS 3.0)))\nEND ", "-1.0 ");
+        testOperator("let in print(2*-3) end\n", "LET IN \tprint((2.0 MULT (0.0 MINUS 3.0)))\nEND ", "-6.0 ");
+        testOperator("let in print(6/-3) end\n", "LET IN \tprint((6.0 DIV (0.0 MINUS 3.0)))\nEND ", "-2.0 ");
+        /*testOperator("let var a:=1 in a:=2, if a=2 then print(\"true\") else print(\"false\") end\n", "LET \t(Var a:=0.0) IN \t(a ASSIGN 0.0)\n\tprint(a)\nEND ", "0.0 ");*/
 
     }
 
@@ -129,28 +131,28 @@ public class JaggerTest extends junit.framework.TestCase{
         double eval;
 
         // Tests
-        testOperator("2==3\n", "(2.0 EQ 3.0)\r", 0.0);
-        testOperator("2==2\n", "(2.0 EQ 2.0)\r", 1.0);
+        testOperator("let in print(2=3) end\n", "LET IN \tprint((2.0 EQ 3.0))\nEND ", "0.0 ");
+        testOperator("let in print(2=2) end\n", "LET IN \tprint((2.0 EQ 2.0))\nEND ", "1.0 ");
 
-        testOperator("2<3\n", "(2.0 INF 3.0)\r", 1.0);
-        testOperator("2<2\n", "(2.0 INF 2.0)\r", 0.0);
-        testOperator("3<2\n", "(3.0 INF 2.0)\r", 0.0);
+        testOperator("let in print(2<3) end\n", "LET IN \tprint((2.0 INF 3.0))\nEND ", "1.0 ");
+        testOperator("let in print(2<2) end\n", "LET IN \tprint((2.0 INF 2.0))\nEND ", "0.0 ");
+        testOperator("let in print(3<2) end\n", "LET IN \tprint((3.0 INF 2.0))\nEND ", "0.0 ");
 
-        testOperator("2>3\n", "(2.0 SUP 3.0)\r", 0.0);
-        testOperator("2>2\n", "(2.0 SUP 2.0)\r", 0.0);
-        testOperator("3>2\n", "(3.0 SUP 2.0)\r", 1.0);
+        testOperator("let in print(2>3) end\n", "LET IN \tprint((2.0 SUP 3.0))\nEND ", "0.0 ");
+        testOperator("let in print(2>2) end\n", "LET IN \tprint((2.0 SUP 2.0))\nEND ", "0.0 ");
+        testOperator("let in print(3>2) end\n", "LET IN \tprint((3.0 SUP 2.0))\nEND ", "1.0 ");
 
-        testOperator("2<=3\n", "(2.0 INF_EQ 3.0)\r", 1.0);
-        testOperator("2<=2\n", "(2.0 INF_EQ 2.0)\r", 1.0);
-        testOperator("3<=2\n", "(3.0 INF_EQ 2.0)\r", 0.0);
+        testOperator("let in print(2<=3) end\n", "LET IN \tprint((2.0 INF_EQ 3.0))\nEND ", "1.0 ");
+        testOperator("let in print(2<=2) end\n", "LET IN \tprint((2.0 INF_EQ 2.0))\nEND ", "1.0 ");
+        testOperator("let in print(3<=2) end\n", "LET IN \tprint((3.0 INF_EQ 2.0))\nEND ", "0.0 ");
 
-        testOperator("2>=3\n", "(2.0 SUP_EQ 3.0)\r", 0.0);
-        testOperator("2>=2\n", "(2.0 SUP_EQ 2.0)\r", 1.0);
-        testOperator("3>=2\n", "(3.0 SUP_EQ 2.0)\r", 1.0);
+        testOperator("let in print(2>=3) end\n", "LET IN \tprint((2.0 SUP_EQ 3.0))\nEND ", "0.0 ");
+        testOperator("let in print(2>=2) end\n", "LET IN \tprint((2.0 SUP_EQ 2.0))\nEND ", "1.0 ");
+        testOperator("let in print(3>=2) end\n", "LET IN \tprint((3.0 SUP_EQ 2.0))\nEND ", "1.0 ");
 
     }
 
-    private static void testOperator(String s1, String expPrint, double expVal) throws ParseException{
+    private static void testOperator(String s1, String expPrint, String expVal) throws ParseException{
         // Create InputStream from String expression
         InputStream is = new ByteArrayInputStream(s1.getBytes());
 
@@ -163,12 +165,20 @@ public class JaggerTest extends junit.framework.TestCase{
         Jagger.mainloop();
 
         // Retrieve pretty print string and eval value with scanner
-        String res = baos.toString();
-        Scanner sc = new Scanner(res).useDelimiter("\n");
-
+        String expok = "OK. ";
+        String res = baos.toString().replaceAll("\r\n", " ");
+        Scanner sc = new Scanner(res).useDelimiter("======================================= ")
+                .skip("\n>>> Process code...\n ");
+        sc.next();//pretty print
         String print = sc.next();
-        double eval = Double.parseDouble(sc.next());
         assertEquals(expPrint, print);
+        sc.next();//binder
+        assertEquals(expok, sc.next());//OK
+        sc.next();//Type Checker
+        assertEquals(expok, sc.next());//OK
+        sc.next();//Evaluator
+
+        String eval = sc.next();
         assertEquals(expVal, eval);
 
         // Revert back to original stdout

@@ -9,8 +9,5 @@ public class TernOp implements Expression {
         this.elseEx = elseEx;
     }
 
-    @Override
-    public <T> T accept(Visitor<T> v) {
-        return v.visit(this);
-    }
-}// TernOp
+    public void accept(Visitor v){ v.visit(this); }
+} // TernOp

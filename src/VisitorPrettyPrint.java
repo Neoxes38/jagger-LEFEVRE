@@ -6,62 +6,120 @@ package src;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class VisitorPrettyPrint implements Visitor<String>
-{
+public class VisitorPrettyPrint implements Visitor {
+    private int scopeCnt = 0;
+
     @Override
-    public String visit(Num n){
+    public void visit(Num n) {
         System.out.print(n.getValue());
-        return n.getValue().toString();
-    }    
+    }
+
     @Override
-    public String visit(BinOp b){
-        String s1, s2;
+    public void visit(Str s) {
+        System.out.print(s.getValue());
+    }
+
+    @Override
+    public void visit(BinOp b) {
         System.out.print("(");
-        s1 = b.lex.accept(this);
+        b.lex.accept(this);
         System.out.print(" " + b.op + " ");
-        s2 = b.rex.accept(this);
+        b.rex.accept(this);
         System.out.print(")");
-        return "(" + s1 + b.op + s2 + ")";
     }
 
     @Override
-    public String visit(Relation r){
-        String s1, s2;
+    public void visit(Relation r) {
         System.out.print("(");
-        s1 = r.lex.accept(this);
+        r.lex.accept(this);
         System.out.print(" " + r.op + " ");
-        s2 = r.rex.accept(this);
+        r.rex.accept(this);
         System.out.print(")");
-        return "(" + s1 + r.op + s2 + ")";
     }
+
     @Override
-    public String visit(Not n){
-        String s;
+    public void visit(Not n) {
         System.out.print("(NOT ");
-        s = n.ex.accept(this);
+        n.ex.accept(this);
         System.out.print(")");
-        return "(NOT " + s + ")";
     }
 
     @Override
-    public String visit(Print p) {
+    public void visit(Print p) {
         System.out.print("print(");
-        String s = p.ex.accept(this) ;
+        p.ex.accept(this);
         System.out.print(")");
-        return "print("+s+")";
     }
 
     @Override
-    public String visit(TernOp t) {
-        //TODO: Do we have to check types?
-        String s1, s2, s3;
+    public void visit(TernOp t) {
         System.out.print("IF ");
-        s1 = t.ifEx.accept(this);
+        t.ifEx.accept(this);
         System.out.print(" THEN ");
-        s2 = t.thenEx.accept(this);
+        t.thenEx.accept(this);
         System.out.print(" ELSE ");
-        s3 = t.elseEx.accept(this);
+        t.elseEx.accept(this);
+    }
 
-        return "IF "+s1+" THEN "+s2+"ELSE"+s3;
+    @Override
+    public void visit(VarDecl v) {
+        System.out.print("(Var " + v.id + ":=");
+        v.e.accept(this);
+        System.out.print(")");
+    }
+
+    @Override
+    public void visit(Var v) {
+        System.out.print(v.id);
+    }
+
+    @Override
+    public void visit(Scope s) {
+        printTab(0);
+        System.out.println("LET");
+        this.scopeCnt++;
+
+        for (VarDecl v : s.vars.values()) {
+            printTab(1);
+            v.accept(this);
+            System.out.println();
+        }
+        printTab(0);
+        System.out.println("IN");
+
+        for (Expression e : s.instrs) {
+            printTab(1);
+            e.accept(this);
+            System.out.print('\n');
+        }
+        printTab(0);
+        System.out.print("END");
+        this.scopeCnt--;
+        if (this.scopeCnt == 0) System.out.println();
+    }
+
+    @Override
+    public void visit(While w) {
+        printTab(0);
+        System.out.print("WHILE ");
+        this.scopeCnt++;
+        w.cond.accept(this);
+        System.out.println(" DO(");
+
+        for (Expression e : w.instrs) {
+            printTab(1);
+            e.accept(this);
+            System.out.print('\n');
+        }
+
+        printTab(0);
+        System.out.println(")");
+        this.scopeCnt--;
+    }
+
+    private void printTab(final int sup) {
+        for (int i = 1; i < this.scopeCnt + sup; i++) {
+            System.out.print('\t');
+        }
     }
 } // VisitorPrettyPrint
