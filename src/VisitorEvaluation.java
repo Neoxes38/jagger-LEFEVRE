@@ -93,7 +93,7 @@ public class VisitorEvaluation implements Visitor {
                 this.resNum = d1 / d2;
                 break;
             case AND:
-                this.resNum = d1 >= 1.0 && d1 >= 1.0 ? 1.0 : 0.0;
+                this.resNum = d1 >= 1.0 && d2 >= 1.0 ? 1.0 : 0.0;
                 break;
             case OR:
                 this.resNum = d1 >= 1.0 || d2 >= 1.0 ? 1.0 : 0.0;
