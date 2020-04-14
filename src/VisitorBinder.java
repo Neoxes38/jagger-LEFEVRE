@@ -85,6 +85,8 @@ public class VisitorBinder extends AbstractVisitorError {
     public void visit(While w) {
         this.envs.push(new HashMap<>());
 
+        for (VarDecl v : w.vars.values())
+            v.accept(this);
         w.cond.accept(this);
         for (Expression e : w.instrs)
             e.accept(this);
