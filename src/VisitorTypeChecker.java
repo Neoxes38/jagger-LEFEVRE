@@ -26,9 +26,9 @@ public class VisitorTypeChecker extends AbstractVisitorError {
     @Override
     public void visit(BinOp b) {
         Types t1;
-        b.lex.accept(this);
+        b.getLex().accept(this);
         t1 = this.type;
-        b.rex.accept(this);
+        b.getRex().accept(this);
         if(!t1.equals(this.type))
             buildError(t1, this.type);
     }
@@ -36,16 +36,16 @@ public class VisitorTypeChecker extends AbstractVisitorError {
     @Override
     public void visit(Relation r) {
         Types t1;
-        r.lex.accept(this);
+        r.getLex().accept(this);
         t1 = this.type;
-        r.rex.accept(this);
+        r.getRex().accept(this);
         if(!t1.equals(this.type))
             buildError(t1, this.type);
     }
 
     @Override
     public void visit(Not n) {
-        n.ex.accept(this);
+        n.getEx().accept(this);
     }
 
     @Override
@@ -56,16 +56,16 @@ public class VisitorTypeChecker extends AbstractVisitorError {
     @Override
     public void visit(TernOp t) {
         Types tmp;
-        t.ifEx.accept(this);
+        t.getIfEx().accept(this);
 
         if(!this.type.equals(Types.NUM)) {
             buildError(Types.NUM, this.type);
             return;
         }
 
-        t.thenEx.accept(this);
+        t.getThenEx().accept(this);
         tmp = this.type;
-        t.elseEx.accept(this);
+        t.getElseEx().accept(this);
 
         if(!tmp.equals(this.type))
             buildError(tmp, this.type);
@@ -73,39 +73,39 @@ public class VisitorTypeChecker extends AbstractVisitorError {
 
     @Override
     public void visit(VarDecl v) {
-        v.e.accept(this);
+        v.getEx().accept(this);
         if(this.type.equals(Types.VOID))
             buildError(this.type);
-        v.type = this.type;
+        v.setType(this.type);
     }
 
     @Override
     public void visit(Var v) {
-        this.type = v.d.type;
+        this.type = v.getDecl().getType();
     }
 
     @Override
     public void visit(Scope s) {
-        for(VarDecl v : s.vars.values()) {
+        for(VarDecl v : s.getVars().values()) {
             v.accept(this);
         }
 
-        for(Expression e : s.instrs)
+        for(Expression e : s.getInstrs())
             e.accept(this);
     }
 
     @Override
     public void visit(While w) {
-        for(VarDecl v : w.vars.values()) {
+        for(VarDecl v : w.getVars().values()) {
             v.accept(this);
         }
-        w.cond.accept(this);
+        w.getCond().accept(this);
         if(!this.type.equals(Types.NUM)) {
             buildError(Types.NUM, this.type);
             return;
         }
 
-        for(Expression e : w.instrs)
+        for(Expression e : w.getInstrs())
             e.accept(this);
     }
 } // VisitorTypeChecker

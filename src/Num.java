@@ -7,7 +7,7 @@ package src;
  * @version (a version number or a date)
  */
 public class Num implements Expression{
-    private Double value;
+    private final Double value;
 
     public Num(final Double value){this.value = value;}
     public Double getValue(){return this.value;}

@@ -1,12 +1,14 @@
 package src;
 
 public class While extends Scope{
-    public Expression cond;
+    private final Expression cond;
 
     public While(Expression cond){
         super();
         this.cond = cond;
     }
+
+    public Expression getCond() { return cond; }
 
     @Override
     public void accept(Visitor v) {

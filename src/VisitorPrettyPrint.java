@@ -22,32 +22,32 @@ public class VisitorPrettyPrint implements Visitor {
     @Override
     public void visit(BinOp b) {
         System.out.print("(");
-        b.lex.accept(this);
-        System.out.print(" " + b.op + " ");
-        b.rex.accept(this);
+        b.getLex().accept(this);
+        System.out.print(" " + b.getOp() + " ");
+        b.getRex().accept(this);
         System.out.print(")");
     }
 
     @Override
     public void visit(Relation r) {
         System.out.print("(");
-        r.lex.accept(this);
-        System.out.print(" " + r.op + " ");
-        r.rex.accept(this);
+        r.getLex().accept(this);
+        System.out.print(" " + r.getOp() + " ");
+        r.getRex().accept(this);
         System.out.print(")");
     }
 
     @Override
     public void visit(Not n) {
         System.out.print("(NOT ");
-        n.ex.accept(this);
+        n.getEx().accept(this);
         System.out.print(")");
     }
 
     @Override
     public void visit(Print p) {
         System.out.print("PRINT(");
-        p.ex.accept(this);
+        p.getEx().accept(this);
         System.out.print(")");
     }
 
@@ -57,31 +57,31 @@ public class VisitorPrettyPrint implements Visitor {
         System.out.println();
         this.scopeCnt++;
         printTab(1);
-        t.ifEx.accept(this);
+        t.getIfEx().accept(this);
         System.out.println();
         printTab(0);
         System.out.print("THEN");
         System.out.println();
         printTab(1);
-        t.thenEx.accept(this);
+        t.getThenEx().accept(this);
         System.out.println();
         printTab(0);
         System.out.print("ELSE");
         System.out.println();
         printTab(1);
-        t.elseEx.accept(this);
+        t.getElseEx().accept(this);
         this.scopeCnt--;
     }
 
     @Override
     public void visit(VarDecl v) {
-        System.out.print("VAR " + v.id + ":=");
-        v.e.accept(this);
+        System.out.print("VAR " + v.getId() + ":=");
+        v.getEx().accept(this);
     }
 
     @Override
     public void visit(Var v) {
-        System.out.print(v.id);
+        System.out.print(v.getId());
     }
 
     @Override
@@ -89,7 +89,7 @@ public class VisitorPrettyPrint implements Visitor {
         System.out.println("LET");
         this.scopeCnt++;
 
-        for (VarDecl v : s.vars.values()) {
+        for (VarDecl v : s.getVars().values()) {
             printTab(1);
             v.accept(this);
             System.out.println();
@@ -97,7 +97,7 @@ public class VisitorPrettyPrint implements Visitor {
         printTab(0);
         System.out.println("IN");
 
-        for (Expression e : s.instrs) {
+        for (Expression e : s.getInstrs()) {
             printTab(1);
             e.accept(this);
             System.out.print('\n');
@@ -110,7 +110,7 @@ public class VisitorPrettyPrint implements Visitor {
 
     @Override
     public void visit(While w) {
-        for (VarDecl v : w.vars.values()) {
+        for (VarDecl v : w.getVars().values()) {
             printTab(0);
             v.accept(this);
             System.out.println();
@@ -119,10 +119,10 @@ public class VisitorPrettyPrint implements Visitor {
         printTab(1);
         System.out.print("WHILE ");
         this.scopeCnt++;
-        w.cond.accept(this);
+        w.getCond().accept(this);
         System.out.println(" DO(");
 
-        for (Expression e : w.instrs) {
+        for (Expression e : w.getInstrs()) {
             printTab(1);
             e.accept(this);
             System.out.print('\n');

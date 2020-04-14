@@ -8,15 +8,20 @@ package src;
  */
 public class BinOp implements Expression
 {
-    public Expression lex;
-    public Expression rex;
-    public BinarOperator op;   
+    private final Expression lex;
+    private final Expression rex;
+    private final BinarOperator op;
 
     public BinOp(Expression lex, Expression rex, BinarOperator op){
         this.lex = lex;
         this.rex = rex;
         this.op = op;
     }
+
+    public Expression getLex() { return lex; }
+    public Expression getRex() { return rex; }
+    public BinarOperator getOp() { return op; }
     
     public void accept(Visitor v){ v.visit(this); }
+
 } // Binop

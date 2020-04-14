@@ -43,16 +43,16 @@ public class VisitorEvaluation implements Visitor {
 
     @Override
     public void visit(BinOp b) {
-        if (b.op == BinarOperator.ASSIGN) {
-            Var v = (Var) b.lex;
-            b.rex.accept(this);
-
+        if (b.getOp() == BinarOperator.ASSIGN) {
+            Var v = (Var) b.getLex();
+            b.getRex().accept(this);
+            //TODO: take a decision => evaluate or not
             switch (currentType) {
                 case NUM:
-                    v.d.e = new Num(this.resNum);
+                    v.getDecl().setEx(new Num(this.resNum));
                     return;
                 case STR:
-                    v.d.e = new Str(this.resStr);
+                    v.getDecl().setEx(new Str(this.resStr));
                     return;
             }
         }
@@ -62,20 +62,20 @@ public class VisitorEvaluation implements Visitor {
         String s1 = "", s2 = "";
 
         if (typeChecker.getType().equals(Types.NUM)) {
-            b.lex.accept(this);
+            b.getLex().accept(this);
             d1 = this.resNum;
-            b.rex.accept(this);
+            b.getRex().accept(this);
             d2 = this.resNum;
             this.currentType = Types.NUM;
         } else if (typeChecker.getType().equals(Types.STR)) {
-            b.lex.accept(this);
+            b.getLex().accept(this);
             s1 = this.resStr;
-            b.rex.accept(this);
+            b.getRex().accept(this);
             s2 = this.resStr;
             this.currentType = Types.STR;
         }
 
-        switch (b.op) {
+        switch (b.getOp()) {
             case PLUS:
                 if (typeChecker.getType().equals(Types.NUM)) {
                     this.resNum = d1 + d2;
@@ -106,18 +106,18 @@ public class VisitorEvaluation implements Visitor {
         r.accept(typeChecker);
         double d1, d2;
         if (typeChecker.getType().equals(Types.NUM)) {
-            r.lex.accept(this);
+            r.getLex().accept(this);
             d1 = this.resNum;
-            r.rex.accept(this);
+            r.getRex().accept(this);
             d2 = this.resNum;
         } else {
-            r.lex.accept(this);
+            r.getLex().accept(this);
             d1 = this.resStr.length();
-            r.rex.accept(this);
+            r.getRex().accept(this);
             d2 = this.resStr.length();
         }
 
-        switch (r.op) {
+        switch (r.getOp()) {
             case EQ:
                 this.resNum = d1 == d2 ? 1.0 : 0.0;
                 break;
@@ -141,13 +141,13 @@ public class VisitorEvaluation implements Visitor {
     @Override
     public void visit(Not n) {
         this.currentType = Types.NUM;
-        n.ex.accept(this);
+        n.getEx().accept(this);
         this.resNum = this.resNum != 0.0 ? 0.0 : 1.0;
     }
 
     @Override
     public void visit(Print p) {
-        p.ex.accept(this);
+        p.getEx().accept(this);
         System.out.println(this.getResult());
         this.currentType = Types.VOID;
     }
@@ -155,11 +155,11 @@ public class VisitorEvaluation implements Visitor {
     @Override
     public void visit(TernOp t) {
         t.accept(typeChecker);
-        t.ifEx.accept(this);
+        t.getIfEx().accept(this);
         if (this.resNum != 0.0)
-            t.thenEx.accept(this);
+            t.getThenEx().accept(this);
         else
-            t.elseEx.accept(this);
+            t.getElseEx().accept(this);
 
         if (typeChecker.getType().equals(Types.NUM))
             this.currentType = Types.NUM;
@@ -173,35 +173,35 @@ public class VisitorEvaluation implements Visitor {
     public void visit(VarDecl v) {
         v.accept(this.typeChecker);
         if (typeChecker.getType().equals(Types.NUM))
-            v.type = Types.NUM;
+            v.setType(Types.NUM);
         else if (typeChecker.getType().equals(Types.STR))
-            v.type = Types.STR;
+            v.setType(Types.STR);
     }
 
     @Override
     public void visit(Var v) {
-        this.currentType = v.d.type;
-        v.d.e.accept(this);
+        this.currentType = v.getDecl().getType();
+        v.getDecl().getEx().accept(this);
     }
 
     @Override
     public void visit(Scope s) {
-        for (VarDecl v : s.vars.values())
+        for (VarDecl v : s.getVars().values())
             v.accept(this);
 
-        for (Expression e : s.instrs)
+        for (Expression e : s.getInstrs())
             e.accept(this);
     }
 
     @Override
     public void visit(While w) {
-        for (VarDecl v : w.vars.values())
+        for (VarDecl v : w.getVars().values())
             v.accept(this);
-        w.cond.accept(this);
+        w.getCond().accept(this);
         while (resNum>0) {
-            for(Expression e : w.instrs)
+            for(Expression e : w.getInstrs())
                 e.accept(this);
-            w.cond.accept(this);
+            w.getCond().accept(this);
         }
     }
 }// VisitorEvaluation

@@ -103,7 +103,7 @@ Expression scope():
 {Expression e; Scope s = new Scope(); VarDecl d;}
 {
     <LET>
-        (d=declaration(){s.addVar(d.id, d);})*
+        (d=declaration(){s.addVar(d.getId(), d);})*
     <IN>
          e=statement(){s.addInstr(e);} ("," e=statement(){s.addInstr(e);})*
     <END>
@@ -127,9 +127,9 @@ Expression for_loop():
 {
     <FOR> t=<ID> <ASSIGN> s=relation() <TO> e=relation() {
         d=new VarDecl(t.toString(), s);
-        v=new Var(d.id);
+        v=new Var(d.getId());
         w=new While(new Relation(v,e,RelationOperator.INF_EQ));
-        w.addVar(d.id, d);
+        w.addVar(d.getId(), d);
     }
     <DO>  "(" e=statement(){w.addInstr(e);}
                ("," e=statement(){w.addInstr(e);})* ")"{

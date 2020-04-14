@@ -20,37 +20,37 @@ public class VisitorBinder extends AbstractVisitorError {
 
     @Override
     public void visit(BinOp b) {
-        b.lex.accept(this);
-        b.rex.accept(this);
+        b.getLex().accept(this);
+        b.getRex().accept(this);
     }
 
     @Override
     public void visit(Relation r) {
-        r.lex.accept(this);
-        r.rex.accept(this);
+        r.getLex().accept(this);
+        r.getRex().accept(this);
     }
 
     @Override
     public void visit(Not n) {
-        n.ex.accept(this);
+        n.getEx().accept(this);
     }
 
     @Override
     public void visit(Print p) {
-        p.ex.accept(this);
+        p.getEx().accept(this);
     }
 
     @Override
     public void visit(TernOp t) {
-        t.ifEx.accept(this);
-        t.thenEx.accept(this);
-        t.elseEx.accept(this);
+        t.getIfEx().accept(this);
+        t.getThenEx().accept(this);
+        t.getElseEx().accept(this);
     }
 
     @Override
     public void visit(VarDecl v) {
-        v.e.accept(this);
-        this.envs.peek().put(v.id, v);
+        v.getEx().accept(this);
+        this.envs.peek().put(v.getId(), v);
     }
 
     @Override
@@ -58,14 +58,14 @@ public class VisitorBinder extends AbstractVisitorError {
         boolean hit = false;
 
         for (int i = this.envs.size() - 1; i >= 0; i--)
-            if (this.envs.get(i).containsKey(v.id)) {
-                v.d = this.envs.get(i).get(v.id);
+            if (this.envs.get(i).containsKey(v.getId())) {
+                v.setDecl(this.envs.get(i).get(v.getId()));
                 hit = true;
                 break;
             }
 
         if (!hit) {
-            setError("Undefined variable: Var \"" + v.id + "\" is not defined.");
+            setError("Undefined variable: Var \"" + v.getId() + "\" is not defined.");
         }
     }
 
@@ -73,9 +73,9 @@ public class VisitorBinder extends AbstractVisitorError {
     public void visit(Scope s) {
         this.envs.push(new HashMap<>());
 
-        for (VarDecl v : s.vars.values())
+        for (VarDecl v : s.getVars().values())
             v.accept(this);
-        for (Expression e : s.instrs)
+        for (Expression e : s.getInstrs())
             e.accept(this);
 
         this.envs.pop();
@@ -83,12 +83,12 @@ public class VisitorBinder extends AbstractVisitorError {
 
     @Override
     public void visit(While w) {
-        this.envs.push(new HashMap<>());
+        this.envs.push(new HashMap<>(0));
 
-        for (VarDecl v : w.vars.values())
+        for (VarDecl v : w.getVars().values())
             v.accept(this);
-        w.cond.accept(this);
-        for (Expression e : w.instrs)
+        w.getCond().accept(this);
+        for (Expression e : w.getInstrs())
             e.accept(this);
 
         this.envs.pop();

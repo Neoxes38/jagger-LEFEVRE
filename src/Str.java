@@ -1,9 +1,10 @@
 package src;
 
 public class Str implements Expression {
-    String value;
+    private final String value;
 
     public Str(String s){ this.value = s.replace("\"",""); }
+
     public String getValue(){ return this.value; }
 
     @Override
