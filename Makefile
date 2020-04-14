@@ -5,10 +5,11 @@ all:
 	java -cp ./out/ src.Jagger
 
 check:
-	java -cp ./src/javacc.jar javacc src/Jagger.jj
-	javac -cp ./src/junit-4.12.jar:. ./tests/JaggerTest.java -d out/
-	javac src/*.java -d out/
-	java -cp ./src/junit-4.12.jar:./out/ tests.JaggerTest
+	cd src;\
+	java -cp ./javacc.jar javacc Jagger.jj;\
+	javac *.java -d out/
+	javac -cp ./tests/junit-4.12.jar:. ./tests/JaggerTest.java -d out/
+	java -cp ./tests/junit-4.12.jar:./tests/hamcrest-2.2.jar:./out/ org.junit.runner.JUnitCore tests.JaggerTest
 
 clean:
 	cd src;\

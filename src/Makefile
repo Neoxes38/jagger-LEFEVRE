@@ -7,9 +7,8 @@ check:
 	java -cp ./javacc.jar javacc Jagger.jj
 	javac *.java -d out/
 	java -cp ./out/ src.Jagger ../tests/test.txt
-	make clear
 
-clear:
+clean:
 	rm Token*.java
 	rm Jagger*.java
 	rm SimpleCharStream.java

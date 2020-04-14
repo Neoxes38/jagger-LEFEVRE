@@ -1,5 +1,22 @@
+let var i := 10
+in
+  print(i),
+  let var i := i * i
+  in
+    print(i)
+  end,
+  print(i)
+end
+
+
 let var i := 1
 in
-  while i < 5 do
-    (print(i), i := i + 1)
+  if true then (print(i), var a:= 2, print(a))
+  else (print(false))
+end
+
+let var i := 1
+in
+  for i := 2 to 3 do (print(i)),
+  print(i)
 end

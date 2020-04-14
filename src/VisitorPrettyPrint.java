@@ -46,26 +46,37 @@ public class VisitorPrettyPrint implements Visitor {
 
     @Override
     public void visit(Print p) {
-        System.out.print("print(");
+        System.out.print("PRINT(");
         p.ex.accept(this);
         System.out.print(")");
     }
 
     @Override
     public void visit(TernOp t) {
-        System.out.print("IF ");
+        System.out.print("IF");
+        System.out.println();
+        this.scopeCnt++;
+        printTab(1);
         t.ifEx.accept(this);
-        System.out.print(" THEN ");
+        System.out.println();
+        printTab(0);
+        System.out.print("THEN");
+        System.out.println();
+        printTab(1);
         t.thenEx.accept(this);
-        System.out.print(" ELSE ");
+        System.out.println();
+        printTab(0);
+        System.out.print("ELSE");
+        System.out.println();
+        printTab(1);
         t.elseEx.accept(this);
+        this.scopeCnt--;
     }
 
     @Override
     public void visit(VarDecl v) {
-        System.out.print("(Var " + v.id + ":=");
+        System.out.print("VAR " + v.id + ":=");
         v.e.accept(this);
-        System.out.print(")");
     }
 
     @Override
@@ -75,7 +86,6 @@ public class VisitorPrettyPrint implements Visitor {
 
     @Override
     public void visit(Scope s) {
-        printTab(0);
         System.out.println("LET");
         this.scopeCnt++;
 
@@ -100,7 +110,13 @@ public class VisitorPrettyPrint implements Visitor {
 
     @Override
     public void visit(While w) {
-        printTab(0);
+        for (VarDecl v : w.vars.values()) {
+            printTab(0);
+            v.accept(this);
+            System.out.println();
+        }
+
+        printTab(1);
         System.out.print("WHILE ");
         this.scopeCnt++;
         w.cond.accept(this);
@@ -113,7 +129,7 @@ public class VisitorPrettyPrint implements Visitor {
         }
 
         printTab(0);
-        System.out.println(")");
+        System.out.print(")");
         this.scopeCnt--;
     }
 

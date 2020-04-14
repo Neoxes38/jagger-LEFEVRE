@@ -9,6 +9,10 @@ public class VisitorTypeChecker extends AbstractVisitorError {
         setError("Invalid type: \"" + expected +"\" was expected but \"" + found + "\" was found.");
     }
 
+    public void buildError(Types found) {
+        setError("Invalid type: \"" + found + "\" is invalid here.");
+    }
+
     @Override
     public void visit(Num n) {
         this.type = Types.NUM;
@@ -70,6 +74,8 @@ public class VisitorTypeChecker extends AbstractVisitorError {
     @Override
     public void visit(VarDecl v) {
         v.e.accept(this);
+        if(this.type.equals(Types.VOID))
+            buildError(this.type);
         v.type = this.type;
     }
 
@@ -90,11 +96,16 @@ public class VisitorTypeChecker extends AbstractVisitorError {
 
     @Override
     public void visit(While w) {
+        for(VarDecl v : w.vars.values()) {
+            v.accept(this);
+        }
         w.cond.accept(this);
-
         if(!this.type.equals(Types.NUM)) {
             buildError(Types.NUM, this.type);
             return;
         }
+
+        for(Expression e : w.instrs)
+            e.accept(this);
     }
 } // VisitorTypeChecker
