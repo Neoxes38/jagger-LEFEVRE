@@ -60,13 +60,13 @@ public class VisitorPrettyPrint implements Visitor {
         t.ifEx.accept(this);
         System.out.println();
         printTab(0);
-        System.out.print(" THEN ");
+        System.out.print("THEN ");
         System.out.println();
         printTab(1);
         t.thenEx.accept(this);
         System.out.println();
         printTab(0);
-        System.out.print(" ELSE ");
+        System.out.print("ELSE ");
         System.out.println();
         printTab(1);
         t.elseEx.accept(this);
@@ -86,7 +86,6 @@ public class VisitorPrettyPrint implements Visitor {
 
     @Override
     public void visit(Scope s) {
-        printTab(0);
         System.out.println("LET");
         this.scopeCnt++;
 

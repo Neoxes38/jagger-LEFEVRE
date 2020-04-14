@@ -174,12 +174,16 @@ Expression statement():
 }
 
 // Ternary (the axiom).
-// T -> <IF> R <THEN> St <ELSE> St
+// T -> <IF> R <THEN> "(" St(,St)* ")" <ELSE> "(" St(,St)* ")"
 Expression ternary():
-{Expression a,b,c;}
+{Expression a, e; Scope s, s1;}
 {
-    <IF> a=relation() <THEN> b=statement() <ELSE> c=statement()
-     { return new TernOp(a,b,c); }
+    <IF> a=relation()
+    <THEN> "(" e=statement(){s=new Scope(); s.addInstr(e);}
+        ("," e=statement(){s.addInstr(e);})* ")"
+    <ELSE> "(" e=statement(){s1=new Scope(); s1.addInstr(e);}
+        ("," e=statement(){s1.addInstr(e);})* ")"
+     { return new TernOp(a,s,s1); }
 }
 
 // Print (the axiom).
