@@ -7,7 +7,6 @@ package src;
 import java.io.*;
 
 public class Jagger{
-    private static Scope currentScope;
     public static void main(String args[]) throws ParseException, FileNotFoundException
     {
 		Jagger parser;
@@ -98,7 +97,7 @@ void mainloop():
 }
 
 // Scope (the axiom).
-// S -> "let" (D)+ "in" St(,St)* "end"
+// S -> <LET> (D)+ <IN> St(,St)* <END>
 Expression scope():
 {Expression e; Scope s = new Scope(); VarDecl d;}
 {
@@ -158,7 +157,7 @@ Expression assignment():
 }
 
 // Statement (the axiom).
-// St -> P | A | T | W | F | S | D
+// St -> P | A | Te | W | F | S | D
 Expression statement():
 {Expression e;}
 {
@@ -174,7 +173,7 @@ Expression statement():
 }
 
 // Ternary (the axiom).
-// T -> <IF> R <THEN> "(" St(,St)* ")" <ELSE> "(" St(,St)* ")"
+// Te -> <IF> R <THEN> "(" St(,St)* ")" <ELSE> "(" St(,St)* ")"
 Expression ternary():
 {Expression a, e; Scope s, s1;}
 {
