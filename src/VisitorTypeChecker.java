@@ -1,5 +1,7 @@
 package src;
 
+import java.util.Objects;
+
 public class VisitorTypeChecker extends AbstractVisitorError {
     private Types type;
 
@@ -28,6 +30,8 @@ public class VisitorTypeChecker extends AbstractVisitorError {
         Types t1;
         b.getLex().accept(this);
         t1 = this.type;
+        if(b.getOp().equals(BinarOperator.ASSIGN)&&!Objects.equals(Types.fromObject(b.getLex()), Types.VAR))
+            buildError(Types.VAR, t1);
         b.getRex().accept(this);
         if(!t1.equals(this.type))
             buildError(t1, this.type);
@@ -46,6 +50,8 @@ public class VisitorTypeChecker extends AbstractVisitorError {
     @Override
     public void visit(Not n) {
         n.getEx().accept(this);
+        if(!this.type.equals(Types.NUM))
+            buildError(Types.NUM, this.type);
     }
 
     @Override

@@ -92,8 +92,7 @@ void mainloop():
 
       }
 }
-    )*
-    <EOF>
+    )* <EOF>
 }
 
 // Scope (the axiom).
@@ -157,14 +156,13 @@ Expression assignment():
 }
 
 // Statement (the axiom).
-// St -> P | A | Te | W | F | S | D
+// St -> P | R | W | F | S | D
 Expression statement():
 {Expression e;}
 {
 	(
 	  e=print()
-	| e=assignment()
-	| e=ternary()
+	| e=relation()
 	| e=while_loop()
 	| e=for_loop()
 	| e=scope()
@@ -222,7 +220,7 @@ Expression expression():
 }
 
 // Term (the axiom).
-// T -> F ('*'F | '/'F | '&&'F)*
+// T -> F ('*'F | '/'F | '&&'F | <ASSIGN> R)*
 Expression term():
 { Expression a,b; }
 {
@@ -231,6 +229,7 @@ Expression term():
       "*" b=factor() { a = new BinOp(a,b,BinarOperator.MULT); }
     | "/" b=factor() { a = new BinOp(a,b,BinarOperator.DIV); }
 	| "&&" b=factor() { a = new BinOp(a,b,BinarOperator.AND);}
+	| <ASSIGN> b=relation() { a = new BinOp(a, b, BinarOperator.ASSIGN);}
     )* { return a; }
 }
 

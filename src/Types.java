@@ -1,7 +1,7 @@
 package src;
 
 public enum Types {
-    NUM("Num"), STR("Str"), VOID("Void");
+    NUM("Num"), STR("Str"), VOID("Void"), VAR("Var");
 
     private String t;
     Types(String t) { this.t = t; }
@@ -11,9 +11,9 @@ public enum Types {
         return t;
     }
 
-    public static Types fromString(String st) {
+    public static Types fromObject(Object o) {
         for (Types type : Types.values()) {
-            if (type.t.equalsIgnoreCase(st)) {
+            if (type.t.equalsIgnoreCase(o.getClass().getSimpleName())) {
                 return type;
             }
         }
