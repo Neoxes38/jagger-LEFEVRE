@@ -22,7 +22,7 @@ public class JaggerTest extends TestCase {
 
     @Test
     public void testBinOp() throws ParseException {
-        // Tests
+        // BinOp on Nums
         processCheck("let in print(2+3) end", "LET IN PRINT((2.0 PLUS 3.0)) END ", "5.0 ");
         processCheck("let in print(2-3) end", "LET IN PRINT((2.0 MINUS 3.0)) END ", "-1.0 ");
         processCheck("let in print(3-2) end", "LET IN PRINT((3.0 MINUS 2.0)) END ", "1.0 ");
@@ -37,29 +37,20 @@ public class JaggerTest extends TestCase {
         processCheck("let in print(1||0) end", "LET IN PRINT((1.0 OR 0.0)) END ", "1.0 ");
         processCheck("let in print(0||0) end", "LET IN PRINT((0.0 OR 0.0)) END ", "0.0 ");
         processCheck("let var a:=0 in a:=1, print(a) end", "LET VAR a:=0.0 IN (a ASSIGN 1.0) PRINT(a) END ", "1.0 ");
-    }
 
-    @Test
-    public void testTernOp() throws ParseException {
-        // Tests
-        processCheck("let in if 1 then (print(\"true\")) else (print(\"false\")) end",
-                "LET IN IF 1.0 THEN LET IN PRINT(\"true\") END ELSE LET IN PRINT(\"false\") END END ", "true ");
-        processCheck("let in if 0 then (print(\"true\")) else (print(\"false\")) end",
-                "LET IN IF 0.0 THEN LET IN PRINT(\"true\") END ELSE LET IN PRINT(\"false\") END END ", "false ");
-        processCheck("let in print(2+-3) end",
-                "LET IN PRINT((2.0 PLUS (0.0 MINUS 3.0))) END ", "-1.0 ");
-        processCheck("let in print(2*-3) end",
-                "LET IN PRINT((2.0 MULT (0.0 MINUS 3.0))) END ", "-6.0 ");
-        processCheck("let in print(6/-3) end",
-                "LET IN PRINT((6.0 DIV (0.0 MINUS 3.0))) END ", "-2.0 ");
-        processCheck("let var a:=1 in a:=2, if a=2 then (print(\"true\")) else (print(\"false\")) end",
-                "LET VAR a:=1.0 IN (a ASSIGN 2.0) IF (a EQ 2.0) THEN LET IN PRINT(\"true\")" +
-                        " END ELSE LET IN PRINT(\"false\") END END ", "true ");
+        // BinOp on Strs
+        processCheck("let in print(\"a\"+\"b\") end", "LET IN PRINT((\"a\" PLUS \"b\")) END ", "ab ");
+        processCheck("let in print(\"a\"-\"b\") end", "LET IN PRINT((\"a\" MINUS \"b\")) END ",
+                " ", false, true);
+        processCheck("let in print(\"a\"*\"b\") end", "LET IN PRINT((\"a\" MULT \"b\")) END ",
+                " ", false, true);
+        processCheck("let in print(\"a\"/\"b\") end", "LET IN PRINT((\"a\" DIV \"b\")) END ",
+                " ", false, true);
     }
 
     @Test
     public void testRelOp() throws ParseException {
-        // Tests
+        // Relations on Nums
         processCheck("let in print(2=3) end", "LET IN PRINT((2.0 EQ 3.0)) END ", "0.0 ");
         processCheck("let in print(2=2) end", "LET IN PRINT((2.0 EQ 2.0)) END ", "1.0 ");
 
@@ -78,6 +69,39 @@ public class JaggerTest extends TestCase {
         processCheck("let in print(2>=3) end", "LET IN PRINT((2.0 SUP_EQ 3.0)) END ", "0.0 ");
         processCheck("let in print(2>=2) end", "LET IN PRINT((2.0 SUP_EQ 2.0)) END ", "1.0 ");
         processCheck("let in print(3>=2) end", "LET IN PRINT((3.0 SUP_EQ 2.0)) END ", "1.0 ");
+
+        // Relations on Strs
+
+        processCheck("let in print(\"a\"=\"b\") end", "LET IN PRINT((\"a\" EQ \"b\")) END ", "1.0 ");
+        processCheck("let in print(\"a\"=\"bb\") end", "LET IN PRINT((\"a\" EQ \"bb\")) END ","0.0 ");
+
+        processCheck("let in print(\"a\"<\"b\") end", "LET IN PRINT((\"a\" INF \"b\")) END ", "0.0 ");
+        processCheck("let in print(\"aa\"<\"b\") end", "LET IN PRINT((\"aa\" INF \"b\")) END ", "0.0 ");
+        processCheck("let in print(\"a\"<\"bb\") end", "LET IN PRINT((\"a\" INF \"bb\")) END ", "1.0 ");
+
+        processCheck("let in print(\"a\"<\"b\") end", "LET IN PRINT((\"a\" INF \"b\")) END ", "0.0 ");
+        processCheck("let in print(\"aa\"<\"b\") end", "LET IN PRINT((\"aa\" INF \"b\")) END ", "0.0 ");
+        processCheck("let in print(\"a\"<\"bb\") end", "LET IN PRINT((\"a\" INF \"bb\")) END ", "1.0 ");
+
+        //TODO: complete tests on Strs
+    }
+
+    @Test
+    public void testTernOp() throws ParseException {
+        // Tests
+        processCheck("let in if 1 then (print(\"true\")) else (print(\"false\")) end",
+                "LET IN IF 1.0 THEN LET IN PRINT(\"true\") END ELSE LET IN PRINT(\"false\") END END ", "true ");
+        processCheck("let in if 0 then (print(\"true\")) else (print(\"false\")) end",
+                "LET IN IF 0.0 THEN LET IN PRINT(\"true\") END ELSE LET IN PRINT(\"false\") END END ", "false ");
+        processCheck("let in print(2+-3) end",
+                "LET IN PRINT((2.0 PLUS (0.0 MINUS 3.0))) END ", "-1.0 ");
+        processCheck("let in print(2*-3) end",
+                "LET IN PRINT((2.0 MULT (0.0 MINUS 3.0))) END ", "-6.0 ");
+        processCheck("let in print(6/-3) end",
+                "LET IN PRINT((6.0 DIV (0.0 MINUS 3.0))) END ", "-2.0 ");
+        processCheck("let var a:=1 in a:=2, if a=2 then (print(\"true\")) else (print(\"false\")) end",
+                "LET VAR a:=1.0 IN (a ASSIGN 2.0) IF (a EQ 2.0) THEN LET IN PRINT(\"true\")" +
+                        " END ELSE LET IN PRINT(\"false\") END END ", "true ");
     }
 
     @Test
@@ -114,58 +138,58 @@ public class JaggerTest extends TestCase {
         processCheck("let var i:= 1+\"1\" in print(i) end",
                 "LET VAR i:=(1.0 PLUS \"1\") IN PRINT(i) END ",
                 "Error -> Invalid type: \"Num\" was expected but \"Str\" was found. ",
-                true, false);
+                false, true);
         processCheck("let var i:= if(true) then(print(\"true\")) else(print(\"false\")) in print(i) end",
                 "LET VAR i:=IF 1.0 THEN LET IN PRINT(\"true\") END ELSE LET IN PRINT(\"false\") END IN PRINT(i) END ",
                 "Error -> Invalid type: \"Void\" is invalid here. ",
-                true, false);
+                false, true);
         // Check if WHILE cond can be VOID
         processCheck("let in while if(true) then(print(\"true\")) else(print(\"false\")) do(print(true)) end",
                 "LET IN WHILE IF 1.0 THEN LET IN PRINT(\"true\") END ELSE LET IN PRINT(\"false\") END DO( " +
                         "PRINT(1.0) ) END ",
                 "Error -> Invalid type: \"Num\" was expected but \"Void\" was found. ",
-                true, false);
+                false, true);
         // Check if IF cond can be VOID
         processCheck("let in if if(true) then(print(0)) else(print(0)) then(1) else(print(2)) end",
                 "LET IN IF IF 1.0 THEN LET IN PRINT(0.0) END ELSE LET IN PRINT(0.0) END THEN LET IN " +
                         "1.0 END ELSE LET IN PRINT(2.0) END END ",
                 "Error -> Invalid type: \"Num\" was expected but \"Void\" was found. ",
-                true, false);
+                false, true);
         // Left expression of an assignment can only be a Var
         processCheck("let var i:= 1 in 1:=2 end", "LET VAR i:=1.0 IN (1.0 ASSIGN 2.0) END ",
                 "Error -> Invalid type: \"Var\" was expected but \"Num\" was found. ",
-                true, false);
+                false, true);
         // Inconsistency between if bodies types
         processCheck("let in if(true) then(print(0)) else(1) end",
                 "LET IN IF 1.0 THEN LET IN PRINT(0.0) END ELSE LET IN 1.0 END END ",
                 "Error -> Invalid type: \"Void\" was expected but \"Num\" was found. ",
-                true, false);
+                false, true);
         // Inconsistency between relation's expressions
         processCheck("let in 1<\"2\" end",
                 "LET IN (1.0 INF \"2\") END ",
                 "Error -> Invalid type: \"Num\" was expected but \"Str\" was found. ",
-                true, false);
+                false, true);
         // Inconsistency between relation's expressions
         processCheck("let in 1+\"2\" end",
                 "LET IN (1.0 PLUS \"2\") END ",
                 "Error -> Invalid type: \"Num\" was expected but \"Str\" was found. ",
-                true, false);
+                false, true);
         processCheck("let in <>\"true\" end",
                 "LET IN (NOT \"true\") END ",
                 "Error -> Invalid type: \"Num\" was expected but \"Str\" was found. ",
-                true, false);
+                false, true);
     }
 
     @Test
     public void testBinder() throws ParseException {
         processCheck("let in print(i) end",
                 "LET IN PRINT(i) END ",
-                "Error -> Undefined variable: Var \"i\" is not defined. ", false, true);
+                "Error -> Undefined variable: Var \"i\" is not defined. ", true, false);
         //TODO: Add positive test
     }
 
     private static void processCheck(String code, String expPrint, String expVal) throws ParseException {
-        processCheck(code, expPrint, expVal, true, true);
+        processCheck(code, expPrint, expVal, false, false);
     }
 
     private static void processCheck(String code, String expPrint, String expOut, Boolean binderBreak, Boolean typeCheckerBreak) throws ParseException {
@@ -194,13 +218,13 @@ public class JaggerTest extends TestCase {
         assertEquals(expPrint, print);
 
         sc.next();//binder
-        if (binderBreak) assertEquals(expOk, sc.next());//OK
+        if (!binderBreak) assertEquals(expOk, sc.next());//OK
         else {
             assertEquals(expOut, sc.next());
             return;
         }
         sc.next();//Type Checker
-        if (typeCheckerBreak) assertEquals(expOk, sc.next());//OK
+        if (!typeCheckerBreak) assertEquals(expOk, sc.next());//OK
         else {
             assertEquals(expOut, sc.next());
             return;
