@@ -131,10 +131,10 @@ Expression for_loop():
     }
     <DO>  "(" e=statement(){w.addInstr(e);}
                ("," e=statement(){w.addInstr(e);})* ")"{
-        w.addInstr(new BinOp(v,new BinOp(v, new Num(1.0), BinarOperator.PLUS),BinarOperator.ASSIGN));
-        return w;
-        return s;
-    }
+    w.addInstr(new BinOp(v,new BinOp(v, new Num(1.0), BinOr.PLUS),BinOr.ASSIGN));
+    return w;
+    return s;
+}
 }
 
 // Declaration (the axiom).
@@ -152,7 +152,7 @@ Expression assignment():
 {Token t;Expression e;}
 {
     t=<ID> <ASSIGN> e=relation()
-     {return new BinOp(new Var(t.toString()), e, BinarOperator.ASSIGN); }
+     {return new BinOp(new Var(t.toString()), e, BinOr.ASSIGN); }
 }
 
 // Statement (the axiom).
@@ -213,9 +213,9 @@ Expression expression():
 {
     a=term()
     (
-      "+" b=expression() { a = new BinOp(a,b,BinarOperator.PLUS); }
-    | "-" b=expression() { a = new BinOp(a,b,BinarOperator.MINUS);}
-	| "||" b=expression() { a = new BinOp(a,b,BinarOperator.OR);}
+      "+" b=expression() { a = new BinOp(a,b,BinOr.PLUS); }
+    | "-" b=expression() { a = new BinOp(a,b,BinOr.MINUS);}
+	| "||" b=expression() { a = new BinOp(a,b,BinOr.OR);}
     )? { return a; }
 }
 
@@ -226,10 +226,10 @@ Expression term():
 {
     a=factor()
     (
-      "*" b=factor() { a = new BinOp(a,b,BinarOperator.MULT); }
-    | "/" b=factor() { a = new BinOp(a,b,BinarOperator.DIV); }
-	| "&&" b=factor() { a = new BinOp(a,b,BinarOperator.AND);}
-	| <ASSIGN> b=relation() { a = new BinOp(a, b, BinarOperator.ASSIGN);}
+      "*" b=factor() { a = new BinOp(a,b,BinOr.MULT); }
+    | "/" b=factor() { a = new BinOp(a,b,BinOr.DIV); }
+	| "&&" b=factor() { a = new BinOp(a,b,BinOr.AND);}
+	| <ASSIGN> b=relation() { a = new BinOp(a, b, BinOr.ASSIGN);}
     )* { return a; }
 }
 
@@ -244,7 +244,7 @@ Expression factor():
 	| <TRUE> { return new Num(1.0);}
 	| <FALSE> { return new Num(0.0);}
 	| "(" e=relation() ")" { return e; }
-	| "+"  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.PLUS);}
-	| "-"  e=factor() {return new BinOp(new Num(0.0), e, BinarOperator.MINUS);}
+	| "+"  e=factor() {return new BinOp(new Num(0.0), e, BinOr.PLUS);}
+	| "-"  e=factor() {return new BinOp(new Num(0.0), e, BinOr.MINUS);}
 	| "<>"   e=factor() {return new Not(e);}
 }

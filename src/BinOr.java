@@ -7,4 +7,4 @@ package src;
  * @version (version number or date here)
  */
 
-public enum BinarOperator{PLUS, MINUS, MULT, DIV, AND, OR, ASSIGN;}
+public enum BinOr {PLUS, MINUS, MULT, DIV, AND, OR, ASSIGN;}

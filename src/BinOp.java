@@ -10,9 +10,9 @@ public class BinOp implements Expression
 {
     private final Expression lex;
     private final Expression rex;
-    private final BinarOperator op;
+    private final BinOr op;
 
-    public BinOp(Expression lex, Expression rex, BinarOperator op){
+    public BinOp(Expression lex, Expression rex, BinOr op){
         this.lex = lex;
         this.rex = rex;
         this.op = op;
@@ -20,7 +20,7 @@ public class BinOp implements Expression
 
     public Expression getLex() { return lex; }
     public Expression getRex() { return rex; }
-    public BinarOperator getOp() { return op; }
+    public BinOr getOp() { return op; }
     
     public void accept(Visitor v){ v.visit(this); }
 

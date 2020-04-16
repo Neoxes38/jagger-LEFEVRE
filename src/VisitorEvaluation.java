@@ -43,7 +43,7 @@ public class VisitorEvaluation implements Visitor {
 
     @Override
     public void visit(BinOp b) {
-        if (b.getOp() == BinarOperator.ASSIGN) {
+        if (b.getOp() == BinOr.ASSIGN) {
             Var v = (Var) b.getLex();
             b.getRex().accept(this);
             //TODO: take a decision => evaluate or not

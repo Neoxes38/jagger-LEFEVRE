@@ -1,7 +1,5 @@
 package src;
 
-import java.util.Objects;
-
 public class VisitorTypeChecker extends AbstractVisitorError {
     private Types type;
 
@@ -13,6 +11,10 @@ public class VisitorTypeChecker extends AbstractVisitorError {
 
     public void buildError(Types found) {
         setError("Invalid type: \"" + found + "\" is invalid here.");
+    }
+
+    public void buildError(BinOr operator, Types found) {
+        setError("Invalid type: operator \"" + operator + "\" cannot be applied on \"" + found + "\".");
     }
 
     @Override
@@ -30,8 +32,12 @@ public class VisitorTypeChecker extends AbstractVisitorError {
         Types t1;
         b.getLex().accept(this);
         t1 = this.type;
-        if(b.getOp().equals(BinarOperator.ASSIGN)&&!Objects.equals(Types.fromObject(b.getLex()), Types.VAR))
+        if(b.getOp().equals(BinOr.ASSIGN)&&!(b.getLex() instanceof Var))
             buildError(Types.VAR, t1);
+
+        if(t1.equals(Types.STR)&&!b.getOp().equals(BinOr.PLUS))
+            buildError(b.getOp(), this.type);
+
         b.getRex().accept(this);
         if(!t1.equals(this.type))
             buildError(t1, this.type);
