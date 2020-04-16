@@ -16,7 +16,7 @@ public class VisitorPrettyPrint implements Visitor {
 
     @Override
     public void visit(Str s) {
-        System.out.print(s.getValue());
+        System.out.print("\""+s.getValue()+"\"");
     }
 
     @Override
