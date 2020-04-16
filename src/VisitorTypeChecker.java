@@ -50,6 +50,7 @@ public class VisitorTypeChecker extends AbstractVisitorError {
 
     @Override
     public void visit(Print p) {
+        p.getEx().accept(this);
         this.type = Types.VOID;
     }
 

@@ -51,9 +51,9 @@ public class JaggerTest extends TestCase {
 
         // Tests
         testOperator("let in if 1 then (print(\"true\")) else (print(\"false\")) end",
-                "LET IN IF 1.0 THEN LET IN PRINT(true) END ELSE LET IN PRINT(false) END END ", "true ");
+                "LET IN IF 1.0 THEN LET IN PRINT(\"true\") END ELSE LET IN PRINT(\"false\") END END ", "true ");
         testOperator("let in if 0 then (print(\"true\")) else (print(\"false\")) end",
-                "LET IN IF 0.0 THEN LET IN PRINT(true) END ELSE LET IN PRINT(false) END END ", "false ");
+                "LET IN IF 0.0 THEN LET IN PRINT(\"true\") END ELSE LET IN PRINT(\"false\") END END ", "false ");
         testOperator("let in print(2+-3) end",
                 "LET IN PRINT((2.0 PLUS (0.0 MINUS 3.0))) END ", "-1.0 ");
         testOperator("let in print(2*-3) end",
@@ -61,8 +61,8 @@ public class JaggerTest extends TestCase {
         testOperator("let in print(6/-3) end",
                 "LET IN PRINT((6.0 DIV (0.0 MINUS 3.0))) END ", "-2.0 ");
         testOperator("let var a:=1 in a:=2, if a=2 then (print(\"true\")) else (print(\"false\")) end",
-                "LET VAR a:=1.0 IN (a ASSIGN 2.0) IF (a EQ 2.0) THEN LET IN PRINT(true)" +
-                        " END ELSE LET IN PRINT(false) END END ", "true ");
+                "LET VAR a:=1.0 IN (a ASSIGN 2.0) IF (a EQ 2.0) THEN LET IN PRINT(\"true\"git )" +
+                        " END ELSE LET IN PRINT(\"false\") END END ", "true ");
     }
 
     @Test
