@@ -52,13 +52,13 @@ end
 | Nom|Axiome |ID |
 |--|--|--|
 |factor|\<NUMBER> \| \<ID> \| \<STR> \| \<TRUE> \| \<FALSE> \| "(" R ")" \| '+'F \| '-'F \| '<>'F|F|
-|term|F ('\*'F \| '/'F \| '&&'F)*|T|
+|term|F ( '\*' F \| '/' F \| '&&' F \| \<ASSIGN> F)*|T|
 |expression| T ('+' T \| '-' T \| '\|\|' T)*|E|
 |relation |(E\|T) ('<'R \| '>'R \| '<='R \| '>='R \| '='R)|R|
 |print|\<PRINT> '(' R ')'|P|
 |ternary |\<IF> R \<THEN> '(' St(,St)* ')' \<ELSE> '(' St(,St)* ')'|Te|
-|statement|P \| A \| Te \| W \| F \| S \| D|St|
-|assignement |\<ID> \<ASSIGN> R|A|
+|statement|P \| R \| W \| F \| S \| D|St|
+|assignment |\<ID> \<ASSIGN> R|A|
 |declaration| \<VAR> \<ID> \<ASSIGN> R|D|
 |for_loop |\<FOR> R \<TO> R \<DO> '(' St(,St)* ')'|F|
 |while_loop|\<WHILE> R \<DO> '(' St(,St)* ')'|W|
@@ -66,13 +66,14 @@ end
 
 ## Difficultés
 ### Problèmes de grammaire
-Le problème qui nous a suivis le plus longtemps est l'élaboration de la grammaire. Nous avons souvent du la retravailler pour des problèmes d'ambiguïté ou de priorité. Il reste d'ailleurs encore un "problème". Nous ne pouvons pas évaluer une variable seule. En effet, il y a une ambiguïté entre une variable et l'affectation d'une variable. Pour lever l'ambiguïté, il faut mettre la variable entre parenthèses comme suit :
+Le problème qui nous a suivis le plus longtemps est l'élaboration de la grammaire. Nous avons souvent du la retravailler pour des problèmes d'ambiguïté ou de priorité. Un bon exemple est le suivant. Nous ne pouvions pas évaluer une variable seule. En effet, il y avait une ambiguïté entre une variable et l'affectation d'une variable. Pour lever l'ambiguïté, il faut mettre la variable entre parenthèses comme suit :
 ```javascript
 let var a:= 1
 in 
-	(a) // a ne fonctionne donc pas
+	(a) // a seul ne fonctionnait pas
 end 
 ```
+En retravaillant sur la grammaire nous avons réussi a supprimer ce problème.
 ### Binder
 Nous avons passé beaucoup de temps sur les scopes et le binder. Il nous a fallu relire le cours plusieurs fois pour comprendre le principe du **threaded AST**. Nous avons donc créé deux classes : VarDecl et Var.  
   
