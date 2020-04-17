@@ -135,6 +135,11 @@ public class JaggerTest extends TestCase {
         processCheck("let in let var a:=1 in print(a) end, let in print(a) end end",
                 "LET IN LET VAR a:=1.0 IN PRINT(a) END LET IN PRINT(a) END END ",
                 "Error -> Undefined variable: Var \"a\" is not defined. ", true, false);
+        // Check if Var actually can't be VOID
+        processCheck("let var a := if true then(print(1)) else(print(2)) in a end",
+                "LET VAR a:=IF 1.0 THEN LET IN PRINT(1.0) END ELSE LET IN PRINT(2.0) END IN a END ",
+                "Error -> Invalid type: \"Void\" is invalid here. ",
+                false, true);
     }
 
     @Test
@@ -211,6 +216,10 @@ public class JaggerTest extends TestCase {
                 "LET IN (NOT \"true\") END ",
                 "Error -> Invalid type: \"Num\" was expected but \"Str\" was found. ",
                 false, true);
+        // Check if we VOID can actually get printed
+        processCheck("let var a:=\"o\" var b:=\"q\" in print(if true then(print(a)) else (print(b))) end",
+                "LET VAR a:=\"o\" VAR b:=\"q\" IN PRINT(IF 1.0 THEN LET IN PRINT(a) END ELSE LET IN PRINT(b) END) END ",
+                "Error -> Invalid type: \"Void\" is invalid here. ", false, true);
     }
 
     @Test
@@ -240,10 +249,10 @@ public class JaggerTest extends TestCase {
     }
 
     /**
-     * @param code code to be interpreted
-     * @param expPrint expected result of pretty printer
-     * @param expOut expected result of evaluation or error message after binding/type checking
-     * @param binderBreak true if the test have to break on binding
+     * @param code             code to be interpreted
+     * @param expPrint         expected result of pretty printer
+     * @param expOut           expected result of evaluation or error message after binding/type checking
+     * @param binderBreak      true if the test have to break on binding
      * @param typeCheckerBreak true if the test have to break on type checking
      * @throws ParseException
      */

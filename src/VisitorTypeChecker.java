@@ -63,6 +63,8 @@ public class VisitorTypeChecker extends AbstractVisitorError {
     @Override
     public void visit(Print p) {
         p.getEx().accept(this);
+        if(this.type.equals(Types.VOID))
+            buildError(this.type);
         this.type = Types.VOID;
     }
 
