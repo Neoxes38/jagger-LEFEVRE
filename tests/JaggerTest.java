@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import src.Jagger;
 import src.ParseException;
+import src.RedefineException;
 
 import java.io.*;
 import java.util.Scanner;
@@ -46,6 +47,8 @@ public class JaggerTest extends TestCase {
                 "Error -> Invalid type: operator \"MULT\" cannot be applied on \"Str\". ", false, true);
         processCheck("let in print(\"a\"/\"b\") end", "LET IN PRINT((\"a\" DIV \"b\")) END ",
                 "Error -> Invalid type: operator \"DIV\" cannot be applied on \"Str\". ", false, true);
+        processCheck("let var i:=\"i\" in i:= \"o\", print(i) end", "LET VAR i:=\"i\" IN (i ASSIGN \"o\") PRINT(i) END ",
+                "o ");
     }
 
     @Test
@@ -73,7 +76,7 @@ public class JaggerTest extends TestCase {
         // Relations on Strs
 
         processCheck("let in print(\"a\"=\"b\") end", "LET IN PRINT((\"a\" EQ \"b\")) END ", "1.0 ");
-        processCheck("let in print(\"a\"=\"bb\") end", "LET IN PRINT((\"a\" EQ \"bb\")) END ","0.0 ");
+        processCheck("let in print(\"a\"=\"bb\") end", "LET IN PRINT((\"a\" EQ \"bb\")) END ", "0.0 ");
 
         processCheck("let in print(\"a\"<\"b\") end", "LET IN PRINT((\"a\" INF \"b\")) END ", "0.0 ");
         processCheck("let in print(\"aa\"<\"b\") end", "LET IN PRINT((\"aa\" INF \"b\")) END ", "0.0 ");
@@ -109,6 +112,19 @@ public class JaggerTest extends TestCase {
         processCheck("let var a:=1 in a:=2, if a=2 then (print(\"true\")) else (print(\"false\")) end",
                 "LET VAR a:=1.0 IN (a ASSIGN 2.0) IF (a EQ 2.0) THEN LET IN PRINT(\"true\")" +
                         " END ELSE LET IN PRINT(\"false\") END END ", "true ");
+        processCheck("let var a:=\"\" in a:=if true then(\"true\") else (\"else\"), print(a) end",
+                "LET VAR a:=\"\" IN (a ASSIGN IF 1.0 THEN LET IN \"true\" END ELSE LET IN \"else\" END) PRINT(a) END ",
+                "true ");
+    }
+
+    @Test
+    public void testScope() throws ParseException {
+        try {
+            processCheck("let var foo := 1 var bar := 1 var foo := 1 in 1 end  ",
+                    "", "");
+        } catch (RedefineException re) {
+            assertEquals(re.getMessage(), "Cannot redefine var \"foo\" in this scope");
+        }
     }
 
     @Test

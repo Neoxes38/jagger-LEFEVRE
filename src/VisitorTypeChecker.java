@@ -35,7 +35,7 @@ public class VisitorTypeChecker extends AbstractVisitorError {
         if(b.getOp().equals(BinOr.ASSIGN)&&!(b.getLex() instanceof Var))
             buildError(Types.VAR, t1);
 
-        if(t1.equals(Types.STR)&&!b.getOp().equals(BinOr.PLUS))
+        if((t1.equals(Types.STR)&&!(b.getLex() instanceof Var))&&!b.getOp().equals(BinOr.PLUS))
             buildError(b.getOp(), this.type);
 
         b.getRex().accept(this);
