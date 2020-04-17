@@ -185,6 +185,9 @@ public class JaggerTest extends TestCase {
         processCheck("let in print(i) end",
                 "LET IN PRINT(i) END ",
                 "Error -> Undefined variable: Var \"i\" is not defined. ", true, false);
+        processCheck("let var foo:=1 var bar :=1+foo in print(bar) end",
+                "LET VAR foo:=1.0 VAR bar:=(1.0 PLUS foo) IN PRINT(bar) END ",
+                "2.0 ");
         //TODO: Add positive test
     }
 

@@ -1,21 +1,20 @@
 package src;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class Scope implements Expression {
-    private final HashMap<String, VarDecl> vars;
-    private final ArrayList<Expression> instrs;
+    private final Map<String, VarDecl> vars;
+    private final List<Expression> instrs;
 
     public Scope() {
-        this.vars = new HashMap<>();
+        this.vars = new LinkedHashMap<>();
         this.instrs = new ArrayList<>();
     }
 
-    public HashMap<String, VarDecl> getVars() {
+    public Map<String, VarDecl> getVars() {
         return vars;
     }
-    public ArrayList<Expression> getInstrs() {
+    public List<Expression> getInstrs() {
         return instrs;
     }
 
