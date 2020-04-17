@@ -1,6 +1,7 @@
 package tests;
 
 import junit.framework.TestCase;
+import org.junit.Assert;
 import org.junit.Test;
 import src.Jagger;
 import src.ParseException;
@@ -17,6 +18,7 @@ public class JaggerTest extends TestCase {
         processCheck("let in print(0) end", "LET IN PRINT(0.0) END ", "0.0 ");
         processCheck("let in print(5) end", "LET IN PRINT(5.0) END ", "5.0 ");
         processCheck("let in print(-2) end", "LET IN PRINT((0.0 MINUS 2.0)) END ", "-2.0 ");
+        processCheck("let in print(1--1) end", "LET IN PRINT((1.0 MINUS (0.0 MINUS 1.0))) END ", "2.0 ");
         processCheck("let in print(<>1) end", "LET IN PRINT((NOT 1.0)) END ", "0.0 ");
         processCheck("let in print(<>0) end", "LET IN PRINT((NOT 0.0)) END ", "1.0 ");
     }
@@ -38,6 +40,9 @@ public class JaggerTest extends TestCase {
         processCheck("let in print(1||0) end", "LET IN PRINT((1.0 OR 0.0)) END ", "1.0 ");
         processCheck("let in print(0||0) end", "LET IN PRINT((0.0 OR 0.0)) END ", "0.0 ");
         processCheck("let var a:=0 in a:=1, print(a) end", "LET VAR a:=0.0 IN (a ASSIGN 1.0) PRINT(a) END ", "1.0 ");
+        // Check operators priority
+        processCheck("let in print(2*2+1) end", "LET IN PRINT(((2.0 MULT 2.0) PLUS 1.0)) END ", "5.0 ");
+        processCheck("let in print(2+2*1) end", "LET IN PRINT((2.0 PLUS (2.0 MULT 1.0))) END ", "4.0 ");
 
         // BinOp on Strs
         processCheck("let in print(\"a\"+\"b\") end", "LET IN PRINT((\"a\" PLUS \"b\")) END ", "ab ");
@@ -119,12 +124,17 @@ public class JaggerTest extends TestCase {
 
     @Test
     public void testScope() throws ParseException {
+        // Check if re-declaring a variable actually throws an exception
         try {
             processCheck("let var foo := 1 var bar := 1 var foo := 1 in 1 end  ",
                     "", "");
         } catch (RedefineException re) {
-            assertEquals(re.getMessage(), "Cannot redefine var \"foo\" in this scope");
+            Assert.assertEquals(re.getMessage(), "Cannot redefine var \"foo\" in this scope");
         }
+        // Check if a scope has access to a variable of a scope at the same level as it (which is forbidden)
+        processCheck("let in let var a:=1 in print(a) end, let in print(a) end end",
+                "LET IN LET VAR a:=1.0 IN PRINT(a) END LET IN PRINT(a) END END ",
+                "Error -> Undefined variable: Var \"a\" is not defined. ", true, false);
     }
 
     @Test
@@ -229,6 +239,14 @@ public class JaggerTest extends TestCase {
         processCheck(code, expPrint, expVal, false, false);
     }
 
+    /**
+     * @param code code to be interpreted
+     * @param expPrint expected result of pretty printer
+     * @param expOut expected result of evaluation or error message after binding/type checking
+     * @param binderBreak true if the test have to break on binding
+     * @param typeCheckerBreak true if the test have to break on type checking
+     * @throws ParseException
+     */
     private static void processCheck(String code, String expPrint, String expOut, Boolean binderBreak, Boolean typeCheckerBreak) throws ParseException {
         // Create InputStream from String expression
         InputStream is = new ByteArrayInputStream(code.getBytes());
@@ -252,24 +270,24 @@ public class JaggerTest extends TestCase {
         sc.next();//process
         sc.next();//process
         String print = sc.next();
-        assertEquals(expPrint, print);
+        Assert.assertEquals(expPrint, print);
 
         sc.next();//binder
-        if (!binderBreak) assertEquals(expOk, sc.next());//OK
+        if (!binderBreak) Assert.assertEquals(expOk, sc.next());//OK
         else {
-            assertEquals(expOut, sc.next());
+            Assert.assertEquals(expOut, sc.next());
             return;
         }
         sc.next();//Type Checker
-        if (!typeCheckerBreak) assertEquals(expOk, sc.next());//OK
+        if (!typeCheckerBreak) Assert.assertEquals(expOk, sc.next());//OK
         else {
-            assertEquals(expOut, sc.next());
+            Assert.assertEquals(expOut, sc.next());
             return;
         }
         sc.next();//Evaluator
 
         String eval = sc.hasNext() ? sc.next() : "";
-        assertEquals(expOut, eval);
+        Assert.assertEquals(expOut, eval);
 
         // Revert back to original stdout
         System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
