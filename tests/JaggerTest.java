@@ -41,11 +41,11 @@ public class JaggerTest extends TestCase {
         // BinOp on Strs
         processCheck("let in print(\"a\"+\"b\") end", "LET IN PRINT((\"a\" PLUS \"b\")) END ", "ab ");
         processCheck("let in print(\"a\"-\"b\") end", "LET IN PRINT((\"a\" MINUS \"b\")) END ",
-                " ", false, true);
+                "Error -> Invalid type: operator \"MINUS\" cannot be applied on \"Str\". ", false, true);
         processCheck("let in print(\"a\"*\"b\") end", "LET IN PRINT((\"a\" MULT \"b\")) END ",
-                " ", false, true);
+                "Error -> Invalid type: operator \"MULT\" cannot be applied on \"Str\". ", false, true);
         processCheck("let in print(\"a\"/\"b\") end", "LET IN PRINT((\"a\" DIV \"b\")) END ",
-                " ", false, true);
+                "Error -> Invalid type: operator \"DIV\" cannot be applied on \"Str\". ", false, true);
     }
 
     @Test
@@ -79,11 +79,18 @@ public class JaggerTest extends TestCase {
         processCheck("let in print(\"aa\"<\"b\") end", "LET IN PRINT((\"aa\" INF \"b\")) END ", "0.0 ");
         processCheck("let in print(\"a\"<\"bb\") end", "LET IN PRINT((\"a\" INF \"bb\")) END ", "1.0 ");
 
-        processCheck("let in print(\"a\"<\"b\") end", "LET IN PRINT((\"a\" INF \"b\")) END ", "0.0 ");
-        processCheck("let in print(\"aa\"<\"b\") end", "LET IN PRINT((\"aa\" INF \"b\")) END ", "0.0 ");
-        processCheck("let in print(\"a\"<\"bb\") end", "LET IN PRINT((\"a\" INF \"bb\")) END ", "1.0 ");
+        processCheck("let in print(\"a\">\"b\") end", "LET IN PRINT((\"a\" SUP \"b\")) END ", "0.0 ");
+        processCheck("let in print(\"aa\">\"b\") end", "LET IN PRINT((\"aa\" SUP \"b\")) END ", "1.0 ");
+        processCheck("let in print(\"a\">\"bb\") end", "LET IN PRINT((\"a\" SUP \"bb\")) END ", "0.0 ");
 
-        //TODO: complete tests on Strs
+        processCheck("let in print(\"a\"<=\"b\") end", "LET IN PRINT((\"a\" INF_EQ \"b\")) END ", "1.0 ");
+        processCheck("let in print(\"aa\"<=\"b\") end", "LET IN PRINT((\"aa\" INF_EQ \"b\")) END ", "0.0 ");
+        processCheck("let in print(\"a\"<=\"bb\") end", "LET IN PRINT((\"a\" INF_EQ \"bb\")) END ", "1.0 ");
+
+        processCheck("let in print(\"a\">=\"b\") end", "LET IN PRINT((\"a\" SUP_EQ \"b\")) END ", "1.0 ");
+        processCheck("let in print(\"aa\">=\"b\") end", "LET IN PRINT((\"aa\" SUP_EQ \"b\")) END ", "1.0 ");
+        processCheck("let in print(\"a\">=\"bb\") end", "LET IN PRINT((\"a\" SUP_EQ \"bb\")) END ", "0.0 ");
+
     }
 
     @Test
@@ -188,7 +195,18 @@ public class JaggerTest extends TestCase {
         processCheck("let var foo:=1 var bar :=1+foo in print(bar) end",
                 "LET VAR foo:=1.0 VAR bar:=(1.0 PLUS foo) IN PRINT(bar) END ",
                 "2.0 ");
-        //TODO: Add positive test
+        processCheck("let var i:=3 in print(i) end",
+                "LET VAR i:=3.0 IN PRINT(i) END ",
+                "3.0 ");
+        processCheck("let var i:=3 in let in print(i) end, print(i) end",
+                "LET VAR i:=3.0 IN LET IN PRINT(i) END PRINT(i) END ",
+                "3.0 3.0 ");
+        processCheck("let var i:=3 in let var i:=2 in print(i) end, print(i) end",
+                "LET VAR i:=3.0 IN LET VAR i:=2.0 IN PRINT(i) END PRINT(i) END ",
+                "2.0 3.0 ");
+        processCheck("let in let var i:=2 in print(i) end, print(i) end",
+                "LET IN LET VAR i:=2.0 IN PRINT(i) END PRINT(i) END ",
+                "Error -> Undefined variable: Var \"i\" is not defined. ", true, false);
     }
 
     private static void processCheck(String code, String expPrint, String expVal) throws ParseException {
