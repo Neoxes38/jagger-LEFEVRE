@@ -124,11 +124,11 @@ Expression for_loop():
 {Token t;Expression s, e, v; VarDecl d; While w;}
 {
     <FOR> t=<ID> <ASSIGN> s=relation() <TO> e=relation() {
-        d=new VarDecl(t.toString(), s);
-        v=new Var(d.getId());
-        w=new While(new Relation(v,e,RelationOperator.INF_EQ));
-        w.addVar(d.getId(), d);
-    }
+    d=new VarDecl(t.toString(), s);
+    v=new Var(d.getId());
+    w=new While(new RelOp(v,e,RelOr.INF_EQ));
+    w.addVar(d.getId(), d);
+}
     <DO>  "(" e=statement(){w.addInstr(e);}
                ("," e=statement(){w.addInstr(e);})* ")"{
     w.addInstr(new BinOp(v,new BinOp(v, new Num(1.0), BinOr.PLUS),BinOr.ASSIGN));
@@ -198,11 +198,11 @@ Expression relation():
 {
 	(a=expression() | a=ternary())
 	(
-	  "<" b=relation() { a = new Relation(a,b,RelationOperator.INF); }
-	| ">" b=relation() { a = new Relation(a,b,RelationOperator.SUP); }
-	| "<=" b=relation() { a = new Relation(a,b,RelationOperator.INF_EQ); }
-	| ">=" b=relation() { a = new Relation(a,b,RelationOperator.SUP_EQ); }
-	| "=" b=relation() { a = new Relation(a,b,RelationOperator.EQ); }
+	  "<" b=relation() { a = new RelOp(a,b,RelOr.INF); }
+	| ">" b=relation() { a = new RelOp(a,b,RelOr.SUP); }
+	| "<=" b=relation() { a = new RelOp(a,b,RelOr.INF_EQ); }
+	| ">=" b=relation() { a = new RelOp(a,b,RelOr.SUP_EQ); }
+	| "=" b=relation() { a = new RelOp(a,b,RelOr.EQ); }
 	)? { return a; }
 }
 

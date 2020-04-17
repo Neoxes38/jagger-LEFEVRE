@@ -1,11 +1,5 @@
 package src;
 
-/**
- * Write a description of class Num here.
- *
- * @author (your name)
- * @version (a version number or a date)
- */
 public class Num implements Expression{
     private final Double value;
 

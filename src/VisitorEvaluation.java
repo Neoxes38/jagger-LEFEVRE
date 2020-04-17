@@ -1,11 +1,5 @@
 package src;
 
-/**
- * Write a description of class VisitorEvaluation here.
- *
- * @author (your name)
- * @version (a version number or a date)
- */
 public class VisitorEvaluation implements Visitor {
     private Double resNum;
     private String resStr;
@@ -23,8 +17,6 @@ public class VisitorEvaluation implements Visitor {
                 return resNum.toString();
             case STR:
                 return resStr;
-            case VOID:
-                return "";
         }
         return "Error";
     }
@@ -102,7 +94,7 @@ public class VisitorEvaluation implements Visitor {
     }
 
     @Override
-    public void visit(Relation r) {
+    public void visit(RelOp r) {
         r.accept(typeChecker);
         double d1, d2;
         if (typeChecker.getType().equals(Types.NUM)) {

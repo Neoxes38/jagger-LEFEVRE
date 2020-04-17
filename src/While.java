@@ -14,4 +14,4 @@ public class While extends Scope{
     public void accept(Visitor v) {
         v.visit(this);
     }
-}
+} // While

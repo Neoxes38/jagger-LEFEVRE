@@ -1,14 +1,17 @@
 package src;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Scope implements Expression {
     private final Map<String, VarDecl> vars;
     private final List<Expression> instrs;
 
     public Scope() {
-        this.vars = new LinkedHashMap<>();
-        this.instrs = new ArrayList<>();
+        this.vars = new LinkedHashMap<>(0);
+        this.instrs = new ArrayList<>(1);
     }
 
     public Map<String, VarDecl> getVars() {

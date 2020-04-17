@@ -25,7 +25,7 @@ public class VisitorBinder extends AbstractVisitorError {
     }
 
     @Override
-    public void visit(Relation r) {
+    public void visit(RelOp r) {
         r.getLex().accept(this);
         r.getRex().accept(this);
     }
@@ -71,7 +71,7 @@ public class VisitorBinder extends AbstractVisitorError {
 
     @Override
     public void visit(Scope s) {
-        this.envs.push(new HashMap<>());
+        this.envs.push(new HashMap<>(0));
 
         for (VarDecl v : s.getVars().values())
             v.accept(this);

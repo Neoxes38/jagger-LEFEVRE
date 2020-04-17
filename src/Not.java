@@ -1,11 +1,5 @@
 package src;
 
-/**
- * Write a description of class No here.
- *
- * @author (your name)
- * @version (a version number or a date)
- */
 public class Not implements Expression{
     private final Expression ex;
     

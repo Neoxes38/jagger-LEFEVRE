@@ -3,6 +3,8 @@ src/Jagger*.java
 src/SimpleCharStream.java
 src/ParseException.java
 
+src/Makefile
+
 tests/test.txt
 
 *.ctxt

@@ -44,7 +44,7 @@ public class VisitorTypeChecker extends AbstractVisitorError {
     }
 
     @Override
-    public void visit(Relation r) {
+    public void visit(RelOp r) {
         Types t1;
         r.getLex().accept(this);
         t1 = this.type;

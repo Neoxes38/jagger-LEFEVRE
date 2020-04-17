@@ -1,11 +1,5 @@
 package src;
 
-/**
- * Write a description of class VisitorPrettyPrint here.
- *
- * @author (your name)
- * @version (a version number or a date)
- */
 public class VisitorPrettyPrint implements Visitor {
     private int scopeCnt = 0;
 
@@ -29,7 +23,7 @@ public class VisitorPrettyPrint implements Visitor {
     }
 
     @Override
-    public void visit(Relation r) {
+    public void visit(RelOp r) {
         System.out.print("(");
         r.getLex().accept(this);
         System.out.print(" " + r.getOp() + " ");
