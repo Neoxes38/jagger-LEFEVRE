@@ -41,11 +41,11 @@ public class JaggerTest extends TestCase {
         // BinOp on Strs
         processCheck("let in print(\"a\"+\"b\") end", "LET IN PRINT((\"a\" PLUS \"b\")) END ", "ab ");
         processCheck("let in print(\"a\"-\"b\") end", "LET IN PRINT((\"a\" MINUS \"b\")) END ",
-                " ", false, true);
+                "Error -> Invalid type: operator \"MINUS\" cannot be applied on \"Str\". ", false, true);
         processCheck("let in print(\"a\"*\"b\") end", "LET IN PRINT((\"a\" MULT \"b\")) END ",
-                " ", false, true);
+                "Error -> Invalid type: operator \"MULT\" cannot be applied on \"Str\". ", false, true);
         processCheck("let in print(\"a\"/\"b\") end", "LET IN PRINT((\"a\" DIV \"b\")) END ",
-                " ", false, true);
+                "Error -> Invalid type: operator \"DIV\" cannot be applied on \"Str\". ", false, true);
     }
 
     @Test
