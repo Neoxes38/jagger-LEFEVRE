@@ -1,3 +1,4 @@
+
 # Jagger - LEFEVRE
 
 ### Auteurs : Josselin Lefèvre et Valentin Foare
@@ -83,12 +84,13 @@ end
 ```
 
 ## Grammaire 
+
 | Nom|Axiome |ID |
 |--|--|--|
 |factor|\<NUMBER> \| \<ID> \| \<STR> \| \<TRUE> \| \<FALSE> \| "(" R ")" \| '+'F \| '-'F \| '<>'F|F|
 |term|F ( '\*' F \| '/' F \| '&&' F \| \<ASSIGN> F)*|T|
 |expression| T ('+' T \| '-' T \| '\|\|' T)*|E|
-|relation |(E\|Te) ('<'R \| '>'R \| '<='R \| '>='R \| '='R)|R|
+|relation |(E\|T) ('<'R \| '>'R \| '<='R \| '>='R \| '='R)|R|
 |print|\<PRINT> '(' R ')'|P|
 |ternary |\<IF> R \<THEN> '(' St(,St)* ')' \<ELSE> '(' St(,St)* ')'|Te|
 |statement|P \| R \| W \| F \| S \| D|St|
@@ -97,3 +99,27 @@ end
 |for_loop |\<FOR> R \<TO> R \<DO> '(' St(,St)* ')'|F|
 |while_loop|\<WHILE> R \<DO> '(' St(,St)* ')'|W|
 |scope|\<LET> (D)+ \<IN> St'(',St')'* \<END>|S|
+
+ ### Détails des composantes des axiomes : 
+
+| ID | Regex |
+|--|--|
+|\<DIGIT>|[0-9]|
+|\<NUMBER>|<DIGIT>+(.<DIGIT>*)?|
+|\<STR>|"[^"]*"|
+|\<ID>|\[a-z][a-z, A-Z, 0-9]*|
+|\<TRUE>|true|
+|\<FALSE>|false|
+|\<PRINT>|print|
+|\<LET>|let|
+|\<IN>|in|
+|\<END>|end|
+|\<ASSIGN>|:=|
+|\<IF>|if|
+|\<THEN>|then|
+|\<ELSE>|else|
+|\<WHILE>|while|
+|\<DO>|do|
+|\<FOR>|for|
+|\<TO>|to|
+|\<VAR>|var|
