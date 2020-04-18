@@ -28,7 +28,7 @@ SKIP: { " " | "\r" | "\t" | "\n" }
 TOKEN:
 {
     < NUMBER: (<DIGIT>)+ ("." (<DIGIT>)*)? >  // A decimal number.
-|   < STR:  "\"" ((~["\""])*)? "\"">
+|   < STR:  "\"" (~["\""])* "\"">
 |   < DIGIT: ["0"-"9"] >                      // A decimal digit.
 |   < PRINT: "print" >                        // Print function.
 |   < LET: "let" >
@@ -45,7 +45,7 @@ TOKEN:
 |   < FOR: "for" >
 |   < TO: "to" >
 |   < VAR: "var" >
-|   < ID: ["a"-"z","A"-"Z"](["a"-"z","A"-"Z","0"-"9"])* > // Var id
+|   < ID: ["a"-"z"](["a"-"z","A"-"Z","0"-"9"])* > // Var id
 }
 
 // Main loop: read expressions on a line until end of file.
