@@ -1,4 +1,5 @@
 
+
 # Jagger - LEFEVRE
 
 ### Auteurs : Josselin Lefèvre et Valentin Foare
@@ -30,7 +31,23 @@ $ make clean
 
 ## Travail réalisé
 
-### Implémentation des boucles while et for
+|Tâche| Statut |
+|---|---|
+| Tarball correcte | :heavy\_check\_mark: |
+| make marche | :heavy\_check\_mark: |
+| make check marche | :heavy\_check\_mark: |
+| Entiers avec les bonnes priorités | :heavy\_check\_mark: |
+| Primitive print | :heavy\_check\_mark: |
+| Support de if-then-else | :heavy\_check\_mark: |
+| Support des chaînes de caractères | :heavy\_check\_mark: |
+| Support des variables et des scopes | :heavy\_check\_mark: |
+| Affectation | :heavy\_check\_mark: |
+| Support de while | :heavy\_check\_mark: |
+| Support de for | :heavy\_check\_mark: |
+| And beyound | [Détails](#and-beyound)|
+
+
+### Détail de l'implémentation des boucles while et for
 
 Au départ, nous avions créé une classe While implémentant l'interface Expression. Mais nous nous sommes aperçu que le while est très proche d'un Scope à la seule différence qu'il a une condition d'arrêt (les autres différences dépendent de l'évaluation et du pretty printing). Aussi, dans notre code While hérite de Scope.  
   
@@ -93,7 +110,7 @@ end
 |relation |(E\|T) ('<'R \| '>'R \| '<='R \| '>='R \| '='R)|R|
 |print|\<PRINT> '(' R ')'|P|
 |ternary |\<IF> R \<THEN> '(' St(,St)* ')' \<ELSE> '(' St(,St)* ')'|Te|
-|statement|P \| R \| W \| F \| S \| D|St|
+|statement|P \| R \| W \| F \| S |St|
 |declaration| \<VAR> \<ID> \<ASSIGN> R|D|
 |for_loop |\<FOR> R \<TO> R \<DO> '(' St(,St)* ')'|F|
 |while_loop|\<WHILE> R \<DO> '(' St(,St)* ')'|W|
@@ -122,3 +139,4 @@ end
 |\<FOR>|for|
 |\<TO>|to|
 |\<VAR>|var|
+

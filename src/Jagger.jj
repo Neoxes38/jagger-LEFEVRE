@@ -131,7 +131,6 @@ Expression for_loop():
                ("," e=statement(){w.addInstr(e);})* ")"{
     w.addInstr(new BinOp(v,new BinOp(v, new Num(1.0), BinOr.PLUS),BinOr.ASSIGN));
     return w;
-    return s;
 }
 }
 
@@ -145,7 +144,7 @@ VarDecl declaration():
 }
 
 // Statement (the axiom).
-// St -> P | R | W | F | S | D
+// St -> P | R | W | F | S
 Expression statement():
 {Expression e;}
 {
@@ -155,7 +154,6 @@ Expression statement():
 	| e=while_loop()
 	| e=for_loop()
 	| e=scope()
-	| e=declaration()
 	){return e;}
 }
 
