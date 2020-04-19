@@ -104,8 +104,8 @@ end
 | ID | Regex |
 |--|--|
 |\<DIGIT>|[0-9]|
-|\<NUMBER>|<DIGIT>+(.<DIGIT>*)?|
-|\<STR>|"[^"]*"|
+|\<NUMBER>|\<DIGIT>+(.\<DIGIT>*)?|
+|\<STR>|".*"|
 |\<ID>|\[a-z][a-z, A-Z, 0-9]*|
 |\<TRUE>|true|
 |\<FALSE>|false|

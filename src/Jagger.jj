@@ -28,7 +28,7 @@ SKIP: { " " | "\r" | "\t" | "\n" }
 TOKEN:
 {
     < NUMBER: (<DIGIT>)+ ("." (<DIGIT>)*)? >  // A decimal number.
-|   < STR:  "\"" (~["\""])* "\"">
+|   < STR:  "\"" (~["\""] | "\\\"")* "\"">
 |   < DIGIT: ["0"-"9"] >                      // A decimal digit.
 |   < PRINT: "print" >                        // Print function.
 |   < LET: "let" >
@@ -229,7 +229,7 @@ Expression factor():
 {
       t=<NUMBER> { return new Num(Double.parseDouble(t.toString())); }
     | t=<ID> { return new Var(t.toString());}
-    | t=<STR>  { return new Str(t.toString()); }
+    | t=<STR>  { return new Str(t.toString().substring(1, t.toString().length()-1)); }
 	| <TRUE> { return new Num(1.0);}
 	| <FALSE> { return new Num(0.0);}
 	| "(" e=relation() ")" { return e; }
