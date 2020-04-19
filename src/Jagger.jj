@@ -56,7 +56,6 @@ void mainloop():
     (
       (a=scope())
       {
-      {
       System.out.println("\n>>> Process code...\n");
       System.out.println("=======================================");
       System.out.println("            Pretty Print               ");
@@ -71,7 +70,7 @@ void mainloop():
       a.accept(binder);
       if(binder.hasError()){
           System.out.println(binder.getMessage());
-          break;
+          continue;
       }else System.out.println("OK.");
 
       System.out.println("=======================================");
@@ -81,7 +80,7 @@ void mainloop():
       a.accept(typeChecker);
       if(typeChecker.hasError()){
           System.out.println(typeChecker.getMessage());
-          break;
+          continue;
       }else System.out.println("OK.");
 
       System.out.println("=======================================");
@@ -91,7 +90,6 @@ void mainloop():
       a.accept(evaluator);
 
       }
-}
     )* <EOF>
 }
 
@@ -144,15 +142,6 @@ VarDecl declaration():
 {
     <VAR> t=<ID> <ASSIGN> e=relation()
      {return new VarDecl(t.toString(), e); }
-}
-
-// Assignment (the axiom).
-// A -> <ID> <ASSIGN> R
-Expression assignment():
-{Token t;Expression e;}
-{
-    t=<ID> <ASSIGN> e=relation()
-     {return new BinOp(new Var(t.toString()), e, BinOr.ASSIGN); }
 }
 
 // Statement (the axiom).

@@ -94,7 +94,6 @@ end
 |print|\<PRINT> '(' R ')'|P|
 |ternary |\<IF> R \<THEN> '(' St(,St)* ')' \<ELSE> '(' St(,St)* ')'|Te|
 |statement|P \| R \| W \| F \| S \| D|St|
-|assignment |\<ID> \<ASSIGN> R|A|
 |declaration| \<VAR> \<ID> \<ASSIGN> R|D|
 |for_loop |\<FOR> R \<TO> R \<DO> '(' St(,St)* ')'|F|
 |while_loop|\<WHILE> R \<DO> '(' St(,St)* ')'|W|
